@@ -1,0 +1,43 @@
+{
+  "name": "@thewhodidthis/sound",
+  "version": "0.0.0",
+  "description": "Helps make noises",
+  "main": "index.js",
+  "module": "index.mjs",
+  "homepage": "https://github.com/thewhodidthis/sound#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thewhodidthis/sound.git"
+  },
+  "bugs": {
+    "url": "https://github.com/thewhodidthis/sound/issues"
+  },
+  "scripts": {
+    "pretest": "eslint test.js",
+    "test": "browserify test | kpow",
+    "prestart": "eslint index.mjs",
+    "start": "rollup -f cjs index.mjs | buble > index.js",
+    "preexample": "eslint example/index.es",
+    "example": "cd example; rollup -f iife index.es | buble > index.js",
+    "postexample": "open example/index.html"
+  },
+  "eslintConfig": {
+    "extends": "@thewhodidthis"
+  },
+  "engines": {
+    "node": ">=4.2.4",
+    "npm": ">=3.5.3"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@thewhodidthis/eslint-config": "latest",
+    "browserify": "latest",
+    "buble": "latest",
+    "eslint": "latest",
+    "kpow": "latest",
+    "rollup": "latest",
+    "tape": "latest"
+  },
+  "author": "sChzs BkgNns <sotirios.bakagiannis@gmail.com> (https://www.thewhodidthis.com)",
+  "license": "Unlicense"
+}
