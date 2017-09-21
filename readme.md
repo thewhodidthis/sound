@@ -1,5 +1,5 @@
 ## Sound
-> Teeny tiny browser based baudio clone
+> Ultra thin baudio style wrapper around `ScriptProcessorNode`
 
 ### Setup
 ```sh
