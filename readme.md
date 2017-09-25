@@ -15,14 +15,23 @@ const TAU = Math.PI * 2
 
 const shape = t => Math.sin(t * TAU * 440)
 const sound = createSignal(shape)
+const audio = sound.context
+const fader = audio.createGain()
+
+fader.gain.value = 0
+
+sound.connect(fader)
+fader.connect(audio.destination)
 
 let busy = false
 
 document.addEventListener('click', () => {
+  const time = audio.currentTime
+
   if (busy) {
-    sound.disconnect()
+    fader.gain.setTargetAtTime(0, time, 0.25)
   } else {
-    sound.connect(sound.context.destination)
+    fader.gain.setTargetAtTime(1, time, 1)
   }
 
   busy = !busy
