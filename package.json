@@ -18,7 +18,7 @@
     "prestart": "eslint index.mjs",
     "start": "rollup -f cjs index.mjs | buble > index.js",
     "preexample": "eslint example/index.es",
-    "example": "cd example; rollup -f iife index.es | buble > index.js",
+    "example": "cd example; rollup -c node:x -f iife index.es | buble > index.js",
     "postexample": "open example/index.html"
   },
   "eslintConfig": {
@@ -30,12 +30,14 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "@thewhodidthis/binocular": "github:thewhodidthis/binocular",
     "@thewhodidthis/eslint-config": "latest",
     "browserify": "latest",
     "buble": "latest",
     "eslint": "latest",
     "kpow": "latest",
     "rollup": "latest",
+    "rollup-config-x": "latest",
     "tape": "latest"
   },
   "author": "sChzs BkgNns <sotirios.bakagiannis@gmail.com> (https://www.thewhodidthis.com)",
