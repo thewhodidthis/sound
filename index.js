@@ -3,17 +3,16 @@
 // # Sound
 // Helps make baudio style monophonic musics
 
-var createAudioSignal = function () {
+var createSignal = function () {
   var args = [], len = arguments.length;
   while ( len-- ) args[ len ] = arguments[ len ];
 
-  var callback = args.pop() || (function () { return 0; });
-  var audioContext = args.shift() || new AudioContext();
+  var reply = args.pop() || (function () { return 0; });
+  var audio = args.shift() || new AudioContext();
 
-  var sampleRate = audioContext.sampleRate;
-  var scriptProcessor = audioContext.createScriptProcessor(2048, 1, 1);
-
-  var tick = 0;
+  var bufferSize = 1024;
+  var sampleRate = audio.sampleRate;
+  var scriptProcessor = audio.createScriptProcessor(bufferSize, 1, 1);
 
   var process = function (ref) {
     var outgoing = ref.outputBuffer;
@@ -24,9 +23,10 @@ var createAudioSignal = function () {
     var stop = prev.length;
 
     for (var i = 0; i < stop; i += 1) {
-      next[i] = callback(tick / sampleRate, i, prev[i]);
+      var now = audio.currentTime;
+      var fix = i / sampleRate;
 
-      tick += 1;
+      next[i] = reply(now + fix, i, prev[i]);
     }
   };
 
@@ -35,5 +35,5 @@ var createAudioSignal = function () {
   return scriptProcessor
 };
 
-module.exports = createAudioSignal;
+module.exports = createSignal;
 

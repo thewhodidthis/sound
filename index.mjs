@@ -1,14 +1,13 @@
 // # Sound
 // Helps make baudio style monophonic musics
 
-const createAudioSignal = (...args) => {
-  const callback = args.pop() || (() => 0)
-  const audioContext = args.shift() || new AudioContext()
+const createSignal = (...args) => {
+  const reply = args.pop() || (() => 0)
+  const audio = args.shift() || new AudioContext()
 
-  const sampleRate = audioContext.sampleRate
-  const scriptProcessor = audioContext.createScriptProcessor(2048, 1, 1)
-
-  let tick = 0
+  const bufferSize = 2048
+  const sampleRate = audio.sampleRate
+  const scriptProcessor = audio.createScriptProcessor(bufferSize, 1, 1)
 
   const process = ({ outputBuffer: outgoing, inputBuffer: incoming }) => {
     const prev = incoming.getChannelData(0)
@@ -16,9 +15,10 @@ const createAudioSignal = (...args) => {
     const stop = prev.length
 
     for (let i = 0; i < stop; i += 1) {
-      next[i] = callback(tick / sampleRate, i, prev[i])
+      const now = audio.currentTime
+      const fix = i / sampleRate
 
-      tick += 1
+      next[i] = reply(now + fix, i, prev[i])
     }
   }
 
@@ -27,4 +27,4 @@ const createAudioSignal = (...args) => {
   return scriptProcessor
 }
 
-export default createAudioSignal
+export default createSignal
