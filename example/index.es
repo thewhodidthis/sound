@@ -1,5 +1,5 @@
 import { monocle, linear, animate } from '@thewhodidthis/binocular'
-import createSignal from '../index.mjs'
+import createSignal from '../'
 
 window.AudioContext = window.AudioContext || window.webkitAudioContext
 
