@@ -33,9 +33,9 @@ const board1 = master.canvas.cloneNode().getContext('2d')
 const board2 = master.canvas.cloneNode().getContext('2d')
 
 const { width, height } = master.canvas
-const halfHeight = height * 0.5
+const halfH = height * 0.5
 
-board1.canvas.height = board2.canvas.height = halfHeight
+board1.canvas.height = board2.canvas.height = halfH - 10
 board2.strokeStyle = '#fff'
 
 // Partials
@@ -49,9 +49,9 @@ const frame = animate(() => {
   scope2()
 
   master.clearRect(0, 0, width, height)
-  master.fillRect(0, halfHeight, width, halfHeight)
+  master.fillRect(0, halfH, width, halfH)
 
-  master.drawImage(board2.canvas, 0, halfHeight)
+  master.drawImage(board2.canvas, 0, halfH)
   master.drawImage(board1.canvas, 0, 0)
 })
 

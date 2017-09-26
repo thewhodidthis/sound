@@ -38,6 +38,7 @@ figure {
 figcaption {
   margin: 0.5rem;
   max-width: calc(500px - 1rem);
+  text-align: left;
 }
 
 canvas,
