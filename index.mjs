@@ -15,10 +15,10 @@ const createSignal = (...args) => {
     const stop = prev.length
 
     for (let i = 0; i < stop; i += 1) {
-      const now = audio.currentTime
-      const fix = i / sampleRate
+      const time = audio.currentTime
+      const nick = i / sampleRate
 
-      next[i] = reply(now + fix, i, prev[i])
+      next[i] = reply(time + nick, i, prev[i])
     }
   }
 

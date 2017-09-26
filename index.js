@@ -23,10 +23,10 @@ var createSignal = function () {
     var stop = prev.length;
 
     for (var i = 0; i < stop; i += 1) {
-      var now = audio.currentTime;
-      var fix = i / sampleRate;
+      var time = audio.currentTime;
+      var nick = i / sampleRate;
 
-      next[i] = reply(now + fix, i, prev[i]);
+      next[i] = reply(time + nick, i, prev[i]);
     }
   };
 
