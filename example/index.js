@@ -47,7 +47,7 @@ var linear = function (source, target, adjust) {
   // Horizontal step multiplier
   var s = Math.round(w / count);
 
-  return function (values, domain) {
+  return function (values) {
     target.clearRect(0, 0, w, h);
 
     target.save();
@@ -69,6 +69,7 @@ var linear = function (source, target, adjust) {
     target.restore();
   }
 };
+
 var radial = function (source, target, adjust) {
   var count = source.frequencyBinCount;
   var ref = target.canvas;
@@ -140,7 +141,7 @@ var monocle = function () {
   var scope = audio.createAnalyser();
 
   // Center values based on whether in the time or frequency domain (1 / 128 or 1 / 256)
-  var scale = function (v) { return pitch ? v * 0.00390625 : (v * 0.0078125) - 1; };
+  var scale = function (v) { return (pitch ? v * 0.00390625 : (v * 0.0078125) - 1); };
 
   scope.fftSize = fftSize;
 
@@ -183,10 +184,10 @@ var createSignal = function () {
     var stop = prev.length;
 
     for (var i = 0; i < stop; i += 1) {
-      var now = audio.currentTime;
-      var fix = i / sampleRate;
+      var time = audio.currentTime;
+      var nick = i / sampleRate;
 
-      next[i] = reply(now + fix, i, prev[i]);
+      next[i] = reply(time + nick, i, prev[i]);
     }
   };
 
