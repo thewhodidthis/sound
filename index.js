@@ -10,7 +10,7 @@ var createSignal = function () {
   var reply = args.pop() || (function () { return 0; });
   var audio = args.shift() || new AudioContext();
 
-  var bufferSize = 1024;
+  var bufferSize = 2048;
   var sampleRate = audio.sampleRate;
   var scriptProcessor = audio.createScriptProcessor(bufferSize, 1, 1);
 
