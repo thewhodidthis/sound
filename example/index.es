@@ -35,7 +35,7 @@ const board2 = master.canvas.cloneNode().getContext('2d')
 const { width, height } = master.canvas
 const halfHeight = height * 0.5
 
-board1.canvas.height = board2.canvas.height = height * 0.5
+board1.canvas.height = board2.canvas.height = halfHeight
 board2.strokeStyle = '#fff'
 
 // Partials
