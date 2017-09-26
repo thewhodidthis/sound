@@ -51,8 +51,8 @@ const frame = animate(() => {
   master.clearRect(0, 0, width, height)
   master.fillRect(0, halfH, width, halfH)
 
-  master.drawImage(board2.canvas, 0, halfH)
-  master.drawImage(board1.canvas, 0, 0)
+  master.drawImage(board2.canvas, 0, halfH + 5)
+  master.drawImage(board1.canvas, 0, 5)
 })
 
 navigator.mediaDevices.getUserMedia({ audio: true })
