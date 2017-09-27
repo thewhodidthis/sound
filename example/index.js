@@ -230,9 +230,10 @@ var board2 = master.canvas.cloneNode().getContext('2d');
 var ref = master.canvas;
 var width = ref.width;
 var height = ref.height;
-var halfH = height * 0.5;
+var middle = height * 0.5;
+var margin = 10;
 
-board1.canvas.height = board2.canvas.height = halfH - 10;
+board1.canvas.height = board2.canvas.height = middle - (margin * 2);
 board2.strokeStyle = '#fff';
 
 // Partials
@@ -246,10 +247,10 @@ var frame = animate(function () {
   scope2();
 
   master.clearRect(0, 0, width, height);
-  master.fillRect(0, halfH, width, halfH);
+  master.fillRect(0, middle, width, middle);
 
-  master.drawImage(board2.canvas, 0, halfH + 5);
-  master.drawImage(board1.canvas, 0, 5);
+  master.drawImage(board2.canvas, 0, middle + margin);
+  master.drawImage(board1.canvas, 0, margin);
 });
 
 navigator.mediaDevices.getUserMedia({ audio: true })
