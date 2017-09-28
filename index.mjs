@@ -1,30 +1,27 @@
 // # Sound
 // Helps make baudio style monophonic musics
 
-const createSignal = (...args) => {
-  const reply = args.pop() || (() => 0)
-  const audio = args.shift() || new AudioContext()
+const createSignal = (audio = new AudioContext(), reply = () => {}, size = 2048) => {
+  const worker = audio.createScriptProcessor(size, 1, 1)
+  const stride = 1 / audio.sampleRate
 
-  const bufferSize = 2048
-  const sampleRate = audio.sampleRate
-  const scriptProcessor = audio.createScriptProcessor(bufferSize, 1, 1)
+  let tick = 0
 
-  const process = ({ outputBuffer: outgoing, inputBuffer: incoming }) => {
+  const crunch = ({ outputBuffer: outgoing, inputBuffer: incoming }) => {
     const prev = incoming.getChannelData(0)
     const next = outgoing.getChannelData(0)
     const stop = prev.length
 
     for (let i = 0; i < stop; i += 1) {
-      const time = audio.currentTime
-      const nick = i / sampleRate
+      next[i] = reply(tick * stride, i, prev[i])
 
-      next[i] = reply(time + nick, i, prev[i])
+      tick += 1
     }
   }
 
-  scriptProcessor.addEventListener('audioprocess', process)
+  worker.addEventListener('audioprocess', crunch)
 
-  return scriptProcessor
+  return worker
 }
 
 export default createSignal
