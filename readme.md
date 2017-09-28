@@ -11,13 +11,10 @@ npm install thewhodidthis/sound
 ```js
 import createSignal from '@thewhodidthis/sound'
 
-const TAU = Math.PI * 2
-
 const audio = new AudioContext()
 const fader = audio.createGain()
 
-const shape = t => Math.sin(t * TAU * 440)
-const sound = createSignal(shape)
+const sound = createSignal(t => Math.sin(t * Math.PI * 880))
 
 fader.gain.value = 0
 
