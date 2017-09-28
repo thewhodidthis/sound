@@ -13,10 +13,11 @@ import createSignal from '@thewhodidthis/sound'
 
 const TAU = Math.PI * 2
 
+const audio = new AudioContext()
+const fader = audio.createGain()
+
 const shape = t => Math.sin(t * TAU * 440)
 const sound = createSignal(shape)
-const audio = sound.context
-const fader = audio.createGain()
 
 fader.gain.value = 0
 
