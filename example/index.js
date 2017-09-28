@@ -249,8 +249,8 @@ var frame = animate(function () {
   master.clearRect(0, 0, width, height);
   master.fillRect(0, middle, width, middle);
 
-  master.drawImage(board2.canvas, 0, middle + margin);
   master.drawImage(board1.canvas, 0, margin);
+  master.drawImage(board2.canvas, 0, margin + middle);
 });
 
 navigator.mediaDevices.getUserMedia({ audio: true })
