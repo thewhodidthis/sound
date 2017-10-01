@@ -28,15 +28,18 @@ const crush = createSignal(audio, (t, i, g) => {
 
 crush.connect(fader)
 
-const master = document.querySelector('canvas').getContext('2d')
-const board1 = master.canvas.cloneNode().getContext('2d')
-const board2 = master.canvas.cloneNode().getContext('2d')
+const canvas = document.querySelector('canvas')
+const master = canvas.getContext('2d')
+const board1 = canvas.cloneNode().getContext('2d')
+const board2 = canvas.cloneNode().getContext('2d')
 
-const { width, height } = master.canvas
+const { width, height } = canvas
 const middle = height * 0.5
+const border = (width - 512) * 0.5
 const margin = 10
 
 board1.canvas.height = board2.canvas.height = middle - (margin * 2)
+board1.canvas.width = board2.canvas.width = width + (border * -2)
 board2.strokeStyle = '#fff'
 
 // Partials
@@ -45,15 +48,15 @@ let scope1
 // Time domain
 let scope2
 
-const frame = animate(() => {
+const play = animate(() => {
   scope1()
   scope2()
 
   master.clearRect(0, 0, width, height)
   master.fillRect(0, middle, width, middle)
 
-  master.drawImage(board1.canvas, 0, margin)
-  master.drawImage(board2.canvas, 0, margin + middle)
+  master.drawImage(board1.canvas, border, margin)
+  master.drawImage(board2.canvas, border, margin + middle)
 })
 
 navigator.mediaDevices.getUserMedia({ audio: true })
@@ -65,7 +68,7 @@ navigator.mediaDevices.getUserMedia({ audio: true })
 
     voice.connect(crush)
 
-    frame()
+    play()
   })
   .catch(({ name, message}) => {
     console.log(`${name}: ${message}`)

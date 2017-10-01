@@ -221,17 +221,19 @@ var crush = createSignal(audio, function (t, i, g) {
 
 crush.connect(fader);
 
-var master = document.querySelector('canvas').getContext('2d');
-var board1 = master.canvas.cloneNode().getContext('2d');
-var board2 = master.canvas.cloneNode().getContext('2d');
+var canvas = document.querySelector('canvas');
+var master = canvas.getContext('2d');
+var board1 = canvas.cloneNode().getContext('2d');
+var board2 = canvas.cloneNode().getContext('2d');
 
-var ref = master.canvas;
-var width = ref.width;
-var height = ref.height;
+var width = canvas.width;
+var height = canvas.height;
 var middle = height * 0.5;
+var border = (width - 512) * 0.5;
 var margin = 10;
 
 board1.canvas.height = board2.canvas.height = middle - (margin * 2);
+board1.canvas.width = board2.canvas.width = width + (border * -2);
 board2.strokeStyle = '#fff';
 
 // Partials
@@ -240,15 +242,15 @@ var scope1;
 // Time domain
 var scope2;
 
-var frame = animate(function () {
+var play = animate(function () {
   scope1();
   scope2();
 
   master.clearRect(0, 0, width, height);
   master.fillRect(0, middle, width, middle);
 
-  master.drawImage(board1.canvas, 0, margin);
-  master.drawImage(board2.canvas, 0, margin + middle);
+  master.drawImage(board1.canvas, border, margin);
+  master.drawImage(board2.canvas, border, margin + middle);
 });
 
 navigator.mediaDevices.getUserMedia({ audio: true })
@@ -260,7 +262,7 @@ navigator.mediaDevices.getUserMedia({ audio: true })
 
     voice.connect(crush);
 
-    frame();
+    play();
   })
   .catch(function (ref) {
     var name = ref.name;
