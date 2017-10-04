@@ -9,14 +9,12 @@ const createSignal = require('./')
 kpow()
 
 test('will default', (t) => {
-  t.plan(1)
+  const sound = createSignal()
+  const { context, bufferSize, onaudioprocess } = sound
 
-  try {
-    const sound = createSignal()
-
-    sound.connect(sound.context.destination)
-    t.pass('Able to connect')
-  } catch (e) {
-    t.fail('Unable to create/connect')
-  }
+  t.ok(context instanceof AudioContext, 'created audio context')
+  t.equal(bufferSize, 512, 'buffer size is set')
+  t.ok(sound instanceof ScriptProcessorNode, 'returns script processor')
+  t.equal(typeof onaudioprocess, 'function', 'onaudioprocess event listener attached')
+  t.end()
 })
