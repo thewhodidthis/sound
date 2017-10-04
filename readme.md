@@ -21,17 +21,17 @@ fader.gain.value = 0
 sound.connect(fader)
 fader.connect(audio.destination)
 
-let busy = false
+let isBusy = false
 
 document.addEventListener('click', () => {
   const time = audio.currentTime
 
-  if (busy) {
+  if (isBusy) {
     fader.gain.setTargetAtTime(0, time, 0.25)
   } else {
     fader.gain.setTargetAtTime(1, time, 1)
   }
 
-  busy = !busy
+  isBusy = !isBusy
 }, false)
 ```
