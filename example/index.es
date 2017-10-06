@@ -1,5 +1,5 @@
-import { monocle, linear, animate } from '@thewhodidthis/binocular'
-import createSignal from '../'
+import { inspect, linear } from '@thewhodidthis/binocular'
+import createSignal from '../index.es'
 
 window.AudioContext = window.AudioContext || window.webkitAudioContext
 
@@ -15,7 +15,7 @@ const freq = 0.1
 let fuzz = 0
 let last = 0
 
-const crush = createSignal(audio, (t, i, g) => {
+const crush = createSignal({ context: audio }, (t, i, g) => {
   fuzz += freq
 
   if (fuzz >= 1) {
@@ -34,6 +34,7 @@ const board1 = canvas.cloneNode().getContext('2d')
 const board2 = canvas.cloneNode().getContext('2d')
 
 const { width, height } = canvas
+
 const middle = height * 0.5
 const border = (width - 512) * 0.5
 const margin = 10
@@ -42,34 +43,38 @@ board1.canvas.height = board2.canvas.height = middle - (margin * 2)
 board1.canvas.width = board2.canvas.width = width + (border * -2)
 board2.strokeStyle = '#fff'
 
-// Partials
-let scope1
+const graph1 = linear(board1)
+const graph2 = linear(board2)
 
-// Time domain
+let scope1
 let scope2
 
-const play = animate(() => {
-  scope1()
-  scope2()
+const tick = fn => window.requestAnimationFrame(fn)
+const draw = () => {
+  scope1(graph1)
+  scope2(graph2)
 
   master.clearRect(0, 0, width, height)
   master.fillRect(0, middle, width, middle)
 
   master.drawImage(board1.canvas, border, margin)
   master.drawImage(board2.canvas, border, margin + middle)
+
+  tick(draw)
+}
+
+navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+  const voice = audio.createMediaStreamSource(stream)
+
+  voice.connect(crush)
+
+  // Before
+  scope1 = inspect(voice, true)
+
+  // After
+  scope2 = inspect(fader, true)
+
+  tick(draw)
+}).catch(({ name, message}) => {
+  console.log(`${name}: ${message}`)
 })
-
-navigator.mediaDevices.getUserMedia({ audio: true })
-  .then((stream) => {
-    const voice = audio.createMediaStreamSource(stream)
-
-    scope1 = monocle(voice, board1, linear, true)
-    scope2 = monocle(fader, board2, linear, true)
-
-    voice.connect(crush)
-
-    play()
-  })
-  .catch(({ name, message}) => {
-    console.log(`${name}: ${message}`)
-  })

@@ -1,180 +1,100 @@
 (function () {
 'use strict';
 
-var animate = function (callback, count) {
-  if ( count === void 0 ) count = 1;
-
-  var frameId;
-
-  var play = function (fn) { return window.requestAnimationFrame(fn); };
-  var stop = function () { return window.cancelAnimationFrame(frameId); };
-  var loop = function () {
-    if (frameId % count === 0) {
-      callback(frameId);
-    }
-
-    if (frameId) {
-      frameId = play(loop);
-    }
-  };
-
-  // Toggle
-  return function () {
-    frameId = (frameId === undefined) ? play(loop) : stop();
-
-    return frameId
-  }
-};
-
-var TAU = Math.PI * 2;
-var deg = TAU / 360;
-
-var linear = function (source, target, adjust) {
-  var count = source.frequencyBinCount;
-  var ref = target.canvas;
+var linear = function (context) {
+  var ref = context.canvas;
   var w = ref.width;
   var h = ref.height;
 
   // Vertical center
   var halfH = h * 0.5;
 
-  // Diameter, available space
-  var d = Math.min(w, h);
-
-  // Radius
-  var r = d * 0.5;
-
-  // Horizontal step multiplier
-  var s = Math.round(w / count);
-
-  return function (values) {
-    target.clearRect(0, 0, w, h);
-
-    target.save();
-    target.translate(0, halfH);
-    target.beginPath();
-
-    for (var i = 0; i < count; i += 1) {
-      var v = values[i];
-
-      // Make sure a pixel is drawn when zero, doesn't look very nice otherwise
-      var y = (r * adjust(v)) + 1;
-      var x = i * s;
-
-      target.moveTo(x, y);
-      target.lineTo(x, y * -1);
-      target.stroke();
-    }
-
-    target.restore();
-  }
-};
-
-var radial = function (source, target, adjust) {
-  var count = source.frequencyBinCount;
-  var ref = target.canvas;
-  var w = ref.width;
-  var h = ref.height;
-
-  var steps = 360 / count;
-  var halfH = h * 0.5;
-  var halfW = w * 0.5;
-
-  // Figure out available space
+  // Available space
   var d = Math.min(w, h);
 
   // Base radius
-  var r = d * 0.325;
+  var r = d * 0.5;
 
-  // Precalculate multiplier
-  var f = r * 0.5;
+  return function (values, weight) {
+    var bins = values.length;
+    var step = Math.round(w / bins);
 
-  return function (values) {
-    target.clearRect(0, 0, w, h);
+    context.clearRect(0, 0, w, h);
 
-    target.save();
-    target.translate(halfW, halfH);
-    target.rotate(-0.25 * TAU);
+    context.save();
+    context.translate(0, halfH);
+    context.beginPath();
 
-    for (var i = 0; i < count; i += 1) {
-      var angle = i * steps * deg;
+    for (var i = 0; i < bins; i += 1) {
       var v = values[i];
-      var k = adjust(v) * f;
 
-      var r1 = r - k;
-      var r2 = r + k;
-      var x1 = r1 * Math.cos(angle);
-      var y1 = r1 * Math.sin(angle);
-      var x2 = r2 * Math.cos(angle);
-      var y2 = r2 * Math.sin(angle);
+      // Make sure a pixel is drawn when zero, doesn't look very nice otherwise
+      var y = r * weight(v) || 1;
+      var x = i * step;
 
-      target.beginPath();
-      target.moveTo(x1, y1);
-      target.lineTo(x2, y2);
-      target.stroke();
+      context.moveTo(x, y);
+      context.lineTo(x, y * -1);
+      context.stroke();
     }
 
-    target.restore();
+    context.restore();
+
+    return values
   }
 };
 
-var monocle = function () {
-  var param = [], len = arguments.length;
-  while ( len-- ) param[ len ] = arguments[ len ];
+var inspect = function (input, fft, fftSize) {
+  if ( fft === void 0 ) fft = false;
+  if ( fftSize === void 0 ) fftSize = 256;
 
-  var graph = radial;
+  if (input === undefined || !(input instanceof AudioNode)) {
+    throw TypeError('Missing valid source')
+  }
 
-  param.forEach(function (v, i) {
-    if (typeof v === 'function') {
-      param.splice(i, 1);
-      graph = v;
-    }
-  });
+  // Setup scope
+  var scan = input.context.createAnalyser();
 
-  // No matter where the callback in found in the arguments, at least specify these in order
-  var input = param[0];
-  var board = param[1];
-  var pitch = param[2]; if ( pitch === void 0 ) pitch = false;
-  var fftSize = param[3]; if ( fftSize === void 0 ) fftSize = 256;
+  scan.fftSize = fftSize;
 
-  var audio = input.context;
-  var scope = audio.createAnalyser();
-
-  // Center values based on whether in the time or frequency domain (1 / 128 or 1 / 256)
-  var scale = function (v) { return (pitch ? v * 0.00390625 : (v * 0.0078125) - 1); };
-
-  scope.fftSize = fftSize;
-
-  var bins = scope.frequencyBinCount;
+  var bins = scan.frequencyBinCount;
   var data = new Uint8Array(bins);
 
-  var copy = function (d) { return (pitch ? scope.getByteFrequencyData(d) : scope.getByteTimeDomainData(d)); };
-  var draw = graph(scope, board, scale);
+  // Center values 1 / 128 for waveforms or 1 / 256 for spectra
+  var norm = function (v) { return (fft ? v * 0.00390625 : (v * 0.0078125) - 1); };
 
-  input.connect(scope);
+  // Decide type of data
+  var copy = function (a) { return (fft ? scan.getByteFrequencyData(a) : scan.getByteTimeDomainData(a)); };
 
-  return function (xtra) {
+  // Connect
+  input.connect(scan);
+
+  return function (draw) {
+    if ( draw === void 0 ) draw = (function () {});
+
     copy(data);
-    draw(data, xtra);
+    draw(data, norm);
 
-    return scope
+    return scan
   }
 };
 
 // # Sound
 // Helps make baudio style monophonic musics
 
-var createSignal = function (audio, reply, size) {
-  if ( audio === void 0 ) audio = new AudioContext();
-  if ( reply === void 0 ) reply = function () {};
-  if ( size === void 0 ) size = 2048;
+var createSignal = function (settings, callback) {
+  if ( settings === void 0 ) settings = {};
+  if ( callback === void 0 ) callback = (function () {});
 
-  var worker = audio.createScriptProcessor(size, 1, 1);
-  var stride = 1 / audio.sampleRate;
+  var bufferSize = settings.bufferSize; if ( bufferSize === void 0 ) bufferSize = 512;
+  var context = settings.context; if ( context === void 0 ) context = new AudioContext();
+  var crunch = typeof settings === 'function' ? settings : callback;
+
+  var worker = context.createScriptProcessor(bufferSize, 1, 1);
+  var stride = 1 / context.sampleRate;
 
   var tick = 0;
 
-  var crunch = function (ref) {
+  worker.onaudioprocess = function (ref) {
     var outgoing = ref.outputBuffer;
     var incoming = ref.inputBuffer;
 
@@ -183,13 +103,11 @@ var createSignal = function (audio, reply, size) {
     var stop = prev.length;
 
     for (var i = 0; i < stop; i += 1) {
-      next[i] = reply(tick * stride, i, prev[i]);
+      next[i] = crunch(tick * stride, i, prev[i]);
 
       tick += 1;
     }
   };
-
-  worker.addEventListener('audioprocess', crunch);
 
   return worker
 };
@@ -208,7 +126,7 @@ var freq = 0.1;
 var fuzz = 0;
 var last = 0;
 
-var crush = createSignal(audio, function (t, i, g) {
+var crush = createSignal({ context: audio }, function (t, i, g) {
   fuzz += freq;
 
   if (fuzz >= 1) {
@@ -228,6 +146,7 @@ var board2 = canvas.cloneNode().getContext('2d');
 
 var width = canvas.width;
 var height = canvas.height;
+
 var middle = height * 0.5;
 var border = (width - 512) * 0.5;
 var margin = 10;
@@ -236,40 +155,44 @@ board1.canvas.height = board2.canvas.height = middle - (margin * 2);
 board1.canvas.width = board2.canvas.width = width + (border * -2);
 board2.strokeStyle = '#fff';
 
-// Partials
-var scope1;
+var graph1 = linear(board1);
+var graph2 = linear(board2);
 
-// Time domain
+var scope1;
 var scope2;
 
-var play = animate(function () {
-  scope1();
-  scope2();
+var tick = function (fn) { return window.requestAnimationFrame(fn); };
+var draw = function () {
+  scope1(graph1);
+  scope2(graph2);
 
   master.clearRect(0, 0, width, height);
   master.fillRect(0, middle, width, middle);
 
   master.drawImage(board1.canvas, border, margin);
   master.drawImage(board2.canvas, border, margin + middle);
+
+  tick(draw);
+};
+
+navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+  var voice = audio.createMediaStreamSource(stream);
+
+  voice.connect(crush);
+
+  // Before
+  scope1 = inspect(voice, true);
+
+  // After
+  scope2 = inspect(fader, true);
+
+  tick(draw);
+}).catch(function (ref) {
+  var name = ref.name;
+  var message = ref.message;
+
+  console.log((name + ": " + message));
 });
-
-navigator.mediaDevices.getUserMedia({ audio: true })
-  .then(function (stream) {
-    var voice = audio.createMediaStreamSource(stream);
-
-    scope1 = monocle(voice, board1, linear, true);
-    scope2 = monocle(fader, board2, linear, true);
-
-    voice.connect(crush);
-
-    play();
-  })
-  .catch(function (ref) {
-    var name = ref.name;
-    var message = ref.message;
-
-    console.log((name + ": " + message));
-  });
 
 }());
 
