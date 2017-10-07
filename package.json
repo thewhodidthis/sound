@@ -13,13 +13,11 @@
     "url": "https://github.com/thewhodidthis/sound/issues"
   },
   "scripts": {
-    "pretest": "eslint test.js",
-    "test": "browserify test | buble | kpow",
-    "prestart": "eslint index.es",
-    "start": "rollup -f cjs index.es > index.js",
-    "preexample": "eslint example/index.es",
-    "example": "cd example; rollup -c node:x -f iife index.es | buble > index.js",
-    "postexample": "open example/index.html"
+    "pretest": "eslint *.js",
+    "test": "browserify -t [ babelify --presets [ env ] ] test | kpow",
+    "prestart": "eslint example/index.es",
+    "start": "cd example; rollup -c node:x -f iife index.es | buble > index.js",
+    "poststart": "open example/index.html"
   },
   "eslintConfig": {
     "extends": "@thewhodidthis"
@@ -32,6 +30,8 @@
   "devDependencies": {
     "@thewhodidthis/binocular": "github:thewhodidthis/binocular",
     "@thewhodidthis/eslint-config": "latest",
+    "babel-preset-env": "^1.6.0",
+    "babelify": "^7.3.0",
     "browserify": "latest",
     "buble": "latest",
     "eslint": "latest",
