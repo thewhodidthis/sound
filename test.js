@@ -1,10 +1,11 @@
 'use strict'
 
-window.AudioContext = window.AudioContext || window.webkitAudioContext
-
 const kpow = require('kpow')
 const test = require('tape')
-const createSignal = require('./')
+
+import createSignal from './'
+
+window.AudioContext = window.AudioContext || window.webkitAudioContext
 
 kpow()
 
