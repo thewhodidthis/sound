@@ -1,7 +1,7 @@
 (function () {
 'use strict';
 
-var linear = function (context) {
+var linearly = function (context) {
   var ref = context.canvas;
   var w = ref.width;
   var h = ref.height;
@@ -38,8 +38,6 @@ var linear = function (context) {
     }
 
     context.restore();
-
-    return values
   }
 };
 
@@ -52,21 +50,21 @@ var inspect = function (input, fft, fftSize) {
   }
 
   // Setup scope
-  var scan = input.context.createAnalyser();
+  var inspector = input.context.createAnalyser();
 
-  scan.fftSize = fftSize;
+  inspector.fftSize = fftSize;
 
-  var bins = scan.frequencyBinCount;
+  var bins = inspector.frequencyBinCount;
   var data = new Uint8Array(bins);
 
   // Center values 1 / 128 for waveforms or 1 / 256 for spectra
   var norm = function (v) { return (fft ? v * 0.00390625 : (v * 0.0078125) - 1); };
 
   // Decide type of data
-  var copy = function (a) { return (fft ? scan.getByteFrequencyData(a) : scan.getByteTimeDomainData(a)); };
+  var copy = function (a) { return (fft ? inspector.getByteFrequencyData(a) : inspector.getByteTimeDomainData(a)); };
 
   // Connect
-  input.connect(scan);
+  input.connect(inspector);
 
   return function (draw) {
     if ( draw === void 0 ) draw = (function () {});
@@ -74,7 +72,7 @@ var inspect = function (input, fft, fftSize) {
     copy(data);
     draw(data, norm);
 
-    return scan
+    return inspector
   }
 };
 
@@ -155,8 +153,8 @@ board1.canvas.height = board2.canvas.height = middle - (margin * 2);
 board1.canvas.width = board2.canvas.width = width + (border * -2);
 board2.strokeStyle = '#fff';
 
-var graph1 = linear(board1);
-var graph2 = linear(board2);
+var graph1 = linearly(board1);
+var graph2 = linearly(board2);
 
 var scope1;
 var scope2;
