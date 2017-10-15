@@ -2,6 +2,9 @@
   "name": "@thewhodidthis/sound",
   "version": "0.0.0",
   "description": "Helps make noises",
+  "keywords": [
+    "audio"
+  ],
   "main": "index.js",
   "module": "index.es",
   "homepage": "https://github.com/thewhodidthis/sound#readme",
@@ -13,11 +16,13 @@
     "url": "https://github.com/thewhodidthis/sound/issues"
   },
   "scripts": {
-    "pretest": "eslint *.js",
-    "test": "browserify -t [ babelify --presets [ env ] ] test | kpow",
-    "prestart": "eslint example/index.es",
-    "start": "cd example; rollup -c node:x -f iife index.es | buble > index.js",
-    "poststart": "open example/index.html"
+    "pretest": "eslint test.js",
+    "test": "rollup -c node:x -f iife test.js | kpow",
+    "prestart": "eslint index.es",
+    "start": "rollup -f cjs index.es > index.js",
+    "preexample": "eslint example/index.es",
+    "example": "cd example; rollup -c node:x -f iife index.es | buble > index.js",
+    "postexample": "open example/index.html"
   },
   "eslintConfig": {
     "extends": "@thewhodidthis"
@@ -30,15 +35,14 @@
   "devDependencies": {
     "@thewhodidthis/binocular": "github:thewhodidthis/binocular",
     "@thewhodidthis/eslint-config": "latest",
-    "babel-preset-env": "^1.6.0",
-    "babelify": "^7.3.0",
-    "browserify": "latest",
+    "@thewhodidthis/lines": "latest",
     "buble": "latest",
+    "cutaway": "latest",
     "eslint": "latest",
     "kpow": "latest",
     "rollup": "latest",
     "rollup-config-x": "latest",
-    "tape": "latest"
+    "tapeless": "latest"
   },
   "author": "sChzs BkgNns <sotirios.bakagiannis@gmail.com> (https://www.thewhodidthis.com)",
   "license": "Unlicense"
