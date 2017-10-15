@@ -1,7 +1,7 @@
-import { linearly } from '@thewhodidthis/binocular/graph'
+import { across } from '@thewhodidthis/lines'
 import inspect from '@thewhodidthis/binocular'
 
-import createSignal from '../'
+import createSignal from '../index.es'
 
 window.AudioContext = window.AudioContext || window.webkitAudioContext
 
@@ -45,8 +45,8 @@ board1.canvas.height = board2.canvas.height = middle - (margin * 2)
 board1.canvas.width = board2.canvas.width = width + (border * -2)
 board2.strokeStyle = '#fff'
 
-const graph1 = linearly(board1)
-const graph2 = linearly(board2)
+const graph1 = across(board1)
+const graph2 = across(board2)
 
 let scope1
 let scope2

@@ -1,7 +1,7 @@
 (function () {
 'use strict';
 
-var linearly = function (context) {
+var across = function (context) {
   var ref = context.canvas;
   var w = ref.width;
   var h = ref.height;
@@ -15,9 +15,9 @@ var linearly = function (context) {
   // Base radius
   var r = d * 0.5;
 
-  return function (values, weight) {
-    var bins = values.length;
-    var step = Math.round(w / bins);
+  return function (data) {
+    var size = data.length;
+    var step = Math.round(w / size);
 
     context.clearRect(0, 0, w, h);
 
@@ -25,15 +25,14 @@ var linearly = function (context) {
     context.translate(0, halfH);
     context.beginPath();
 
-    for (var i = 0; i < bins; i += 1) {
-      var v = values[i];
-
+    for (var i = 0; i < size; i += 1) {
       // Make sure a pixel is drawn when zero, doesn't look very nice otherwise
-      var y = r * weight(v) || 1;
       var x = i * step;
+      var y = r * data[i] || 1;
+      var v = y * -1;
 
       context.moveTo(x, y);
-      context.lineTo(x, y * -1);
+      context.lineTo(x, v);
       context.stroke();
     }
 
@@ -41,38 +40,42 @@ var linearly = function (context) {
   }
 };
 
-var inspect = function (input, fft, fftSize) {
+var analyse = function (node, fft, fftSize) {
   if ( fft === void 0 ) fft = false;
   if ( fftSize === void 0 ) fftSize = 256;
 
-  if (input === undefined || !(input instanceof AudioNode)) {
+  if (node === undefined || !(node instanceof AudioNode)) {
     throw TypeError('Missing valid source')
   }
 
-  // Setup scope
-  var inspector = input.context.createAnalyser();
+  // Create scope
+  var analyser = node.context.createAnalyser();
 
-  inspector.fftSize = fftSize;
+  // Adjust scope
+  analyser.fftSize = fftSize;
 
-  var bins = inspector.frequencyBinCount;
-  var data = new Uint8Array(bins);
+  // Avoids having to polyfill `AnalyserNode.getFloatTimeDomainData`
+  var data = new Uint8Array(analyser.frequencyBinCount);
+
+  // Decide type of data
+  var copy = function (a) { return (fft ? analyser.getByteFrequencyData(a) : analyser.getByteTimeDomainData(a)); };
 
   // Center values 1 / 128 for waveforms or 1 / 256 for spectra
   var norm = function (v) { return (fft ? v * 0.00390625 : (v * 0.0078125) - 1); };
 
-  // Decide type of data
-  var copy = function (a) { return (fft ? inspector.getByteFrequencyData(a) : inspector.getByteTimeDomainData(a)); };
+  // Produce normalized copy of data
+  var snap = function (a) { return Float32Array.from(a, norm); };
 
   // Connect
-  input.connect(inspector);
+  node.connect(analyser);
 
   return function (draw) {
     if ( draw === void 0 ) draw = (function () {});
 
     copy(data);
-    draw(data, norm);
+    draw(snap(data));
 
-    return inspector
+    return analyser
   }
 };
 
@@ -153,8 +156,8 @@ board1.canvas.height = board2.canvas.height = middle - (margin * 2);
 board1.canvas.width = board2.canvas.width = width + (border * -2);
 board2.strokeStyle = '#fff';
 
-var graph1 = linearly(board1);
-var graph2 = linearly(board2);
+var graph1 = across(board1);
+var graph2 = across(board2);
 
 var scope1;
 var scope2;
@@ -179,10 +182,10 @@ navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
   voice.connect(crush);
 
   // Before
-  scope1 = inspect(voice, true);
+  scope1 = analyse(voice, true);
 
   // After
-  scope2 = inspect(fader, true);
+  scope2 = analyse(fader, true);
 
   tick(draw);
 }).catch(function (ref) {
