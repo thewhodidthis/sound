@@ -3,8 +3,8 @@
 
 ### Setup
 ```sh
-# Fetch latest from github repo
-npm install thewhodidthis/sound
+# Fetch latest from github
+npm i thewhodidthis/sound
 ```
 
 ### Usage
