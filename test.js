@@ -1,21 +1,17 @@
-'use strict'
-
-const kpow = require('kpow')
-const test = require('tape')
-
-import createSignal from './'
+import 'cutaway'
+import { stat, veto } from 'tapeless'
+import createSignal from './index.es'
 
 window.AudioContext = window.AudioContext || window.webkitAudioContext
 
-kpow()
+const ok = veto(a => !!a)
 
-test('will default', (t) => {
-  const sound = createSignal()
-  const { context, bufferSize, onaudioprocess } = sound
+const sound = createSignal()
+const { context, bufferSize, onaudioprocess } = sound
 
-  t.ok(context instanceof AudioContext, 'created audio context')
-  t.equal(bufferSize, 512, 'buffer size is set')
-  t.ok(sound instanceof ScriptProcessorNode, 'returns script processor')
-  t.equal(typeof onaudioprocess, 'function', 'onaudioprocess event listener attached')
-  t.end()
-})
+ok(context instanceof AudioContext, 'created audio context')
+ok(bufferSize === 512, 'buffer size is set')
+ok(sound instanceof ScriptProcessorNode, 'returns script processor')
+ok(typeof onaudioprocess === 'function', 'onaudioprocess event listener attached')
+
+stat()
