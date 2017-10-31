@@ -1,7 +1,9 @@
 (function () {
 'use strict';
 
-var across = function (context) {
+var across = function (context, base) {
+  if ( base === void 0 ) base = 0;
+
   var ref = context.canvas;
   var w = ref.width;
   var h = ref.height;
@@ -26,16 +28,15 @@ var across = function (context) {
     context.beginPath();
 
     for (var i = 0; i < size; i += 1) {
-      // Make sure a pixel is drawn when zero, doesn't look very nice otherwise
       var x = i * step;
-      var y = r * data[i] || 1;
+      var y = r * data[i] || base;
       var v = y * -1;
 
       context.moveTo(x, y);
       context.lineTo(x, v);
-      context.stroke();
     }
 
+    context.stroke();
     context.restore();
   }
 };
@@ -154,10 +155,11 @@ var margin = 10;
 
 board1.canvas.height = board2.canvas.height = middle - (margin * 2);
 board1.canvas.width = board2.canvas.width = width + (border * -2);
+board1.lineWidth = board2.lineWidth = 2;
 board2.strokeStyle = '#fff';
 
-var graph1 = across(board1);
-var graph2 = across(board2);
+var graph1 = across(board1, 1);
+var graph2 = across(board2, 1);
 
 var scope1;
 var scope2;
