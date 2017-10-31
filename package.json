@@ -2,9 +2,6 @@
   "name": "@thewhodidthis/sound",
   "version": "0.0.1",
   "description": "Helps make noises",
-  "keywords": [
-    "audio"
-  ],
   "main": "index.js",
   "module": "index.es",
   "homepage": "https://github.com/thewhodidthis/sound#readme",
@@ -44,6 +41,9 @@
     "rollup-config-x": "latest",
     "tapeless": "latest"
   },
+  "keywords": [
+    "audio"
+  ],
   "author": "sChzs BkgNns <sotirios.bakagiannis@gmail.com> (https://www.thewhodidthis.com)",
   "license": "Unlicense"
 }
