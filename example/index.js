@@ -2,7 +2,7 @@
 'use strict';
 
 var across = function (context, base) {
-  if ( base === void 0 ) base = 0;
+  if ( base === void 0 ) base = 1;
 
   var ref = context.canvas;
   var w = ref.width;
@@ -158,8 +158,8 @@ board1.canvas.width = board2.canvas.width = width + (border * -2);
 board1.lineWidth = board2.lineWidth = 2;
 board2.strokeStyle = '#fff';
 
-var graph1 = across(board1, 1);
-var graph2 = across(board2, 1);
+var graph1 = across(board1);
+var graph2 = across(board2);
 
 var scope1;
 var scope2;

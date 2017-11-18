@@ -46,8 +46,8 @@ board1.canvas.width = board2.canvas.width = width + (border * -2)
 board1.lineWidth = board2.lineWidth = 2
 board2.strokeStyle = '#fff'
 
-const graph1 = across(board1, 1)
-const graph2 = across(board2, 1)
+const graph1 = across(board1)
+const graph2 = across(board2)
 
 let scope1
 let scope2
