@@ -1,44 +1,60 @@
 (function () {
 'use strict';
 
-var across = function (context, base) {
+var draw$1 = function (from, plot, base) {
   if ( base === void 0 ) base = 1;
 
-  var ref = context.canvas;
+  var ref = plot.canvas;
   var w = ref.width;
   var h = ref.height;
+  var x = w * 0.5;
+  var y = h * 0.5;
 
-  // Vertical center
-  var halfH = h * 0.5;
+  var max = Math.max(w, h);
+  var min = Math.min(w, h);
 
-  // Available space
-  var d = Math.min(w, h);
+  var map = from(max, min, base);
 
-  // Base radius
-  var r = d * 0.5;
+  return function (feed) {
+    plot.clearRect(0, 0, w, h);
+    plot.save();
+    plot.translate(x, y);
+    plot.beginPath();
 
-  return function (data) {
-    var size = data.length;
-    var step = Math.round(w / size);
+    Array.from(feed).map(map).forEach(function (ref) {
+      var a = ref[0];
+      var b = ref[1];
 
-    context.clearRect(0, 0, w, h);
+      plot.moveTo(a.x, a.y);
+      plot.lineTo(b.x, b.y);
+    });
 
-    context.save();
-    context.translate(0, halfH);
-    context.beginPath();
-
-    for (var i = 0; i < size; i += 1) {
-      var x = i * step;
-      var y = r * data[i] || base;
-      var v = y * -1;
-
-      context.moveTo(x, y);
-      context.lineTo(x, v);
-    }
-
-    context.stroke();
-    context.restore();
+    plot.stroke();
+    plot.restore();
   }
+};
+
+var flat = function (span, room, base) { return function (v, i, ref) {
+  var length = ref.length;
+
+  var step = span / length;
+
+  var q = step * i;
+  var r = room * 0.5;
+  var k = step * 0.5 * (length - 1);
+
+  var x = q - k;
+  var y = r * v || base;
+
+  return [{ x: x, y: y }, { x: x, y: -1 * y }]
+}; };
+
+
+var across = function () {
+  var args = [], len = arguments.length;
+  while ( len-- ) args[ len ] = arguments[ len ];
+
+  return draw$1.apply(void 0, [ flat ].concat( args ));
 };
 
 var analyse = function (node, fft, fftSize) {
