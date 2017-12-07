@@ -1,18 +1,18 @@
 (function () {
 'use strict';
 
-var draw$1 = function (from, plot, base) {
+var draw = function (from, plot, base) {
   if ( base === void 0 ) base = 1;
 
   var ref = plot.canvas;
   var w = ref.width;
   var h = ref.height;
+
   var x = w * 0.5;
   var y = h * 0.5;
 
   var max = Math.max(w, h);
   var min = Math.min(w, h);
-
   var map = from(max, min, base);
 
   return function (feed) {
@@ -54,11 +54,12 @@ var across = function () {
   var args = [], len = arguments.length;
   while ( len-- ) args[ len ] = arguments[ len ];
 
-  return draw$1.apply(void 0, [ flat ].concat( args ));
+  return draw.apply(void 0, [ flat ].concat( args ));
 };
 
-var analyse = function (node, fft, fftSize) {
+var analyse = function (node, fft, k, fftSize) {
   if ( fft === void 0 ) fft = false;
+  if ( k === void 0 ) k = 1;
   if ( fftSize === void 0 ) fftSize = 256;
 
   if (node === undefined || !(node instanceof AudioNode)) {
@@ -78,7 +79,7 @@ var analyse = function (node, fft, fftSize) {
   var copy = function (a) { return (fft ? analyser.getByteFrequencyData(a) : analyser.getByteTimeDomainData(a)); };
 
   // Center values 1 / 128 for waveforms or 1 / 256 for spectra
-  var norm = function (v) { return (fft ? v * 0.00390625 : (v * 0.0078125) - 1); };
+  var norm = function (v) { return (fft ? v * 0.00390625 : (v * 0.0078125) - 1) * k; };
 
   // Produce normalized copy of data
   var snap = function (a) { return Float32Array.from(a, norm); };
@@ -87,7 +88,7 @@ var analyse = function (node, fft, fftSize) {
   node.connect(analyser);
 
   return function (draw) {
-    if ( draw === void 0 ) draw = (function () {});
+    if ( draw === void 0 ) draw = function (v) { return v; };
 
     copy(data);
     draw(snap(data));
@@ -180,8 +181,7 @@ var graph2 = across(board2);
 var scope1;
 var scope2;
 
-var tick = function (fn) { return window.requestAnimationFrame(fn); };
-var draw = function () {
+var render = function () {
   scope1(graph1);
   scope2(graph2);
 
@@ -191,12 +191,13 @@ var draw = function () {
   master.drawImage(board1.canvas, border, margin);
   master.drawImage(board2.canvas, border, margin + middle);
 
-  tick(draw);
+  window.requestAnimationFrame(render);
 };
 
 navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
   var voice = audio.createMediaStreamSource(stream);
 
+  // Feed the beast
   voice.connect(crush);
 
   // Before
@@ -205,7 +206,7 @@ navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
   // After
   scope2 = analyse(fader, true);
 
-  tick(draw);
+  window.requestAnimationFrame(render);
 }).catch(function (ref) {
   var name = ref.name;
   var message = ref.message;

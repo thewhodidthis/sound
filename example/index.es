@@ -52,8 +52,7 @@ const graph2 = across(board2)
 let scope1
 let scope2
 
-const tick = fn => window.requestAnimationFrame(fn)
-const draw = () => {
+const render = () => {
   scope1(graph1)
   scope2(graph2)
 
@@ -63,12 +62,13 @@ const draw = () => {
   master.drawImage(board1.canvas, border, margin)
   master.drawImage(board2.canvas, border, margin + middle)
 
-  tick(draw)
+  window.requestAnimationFrame(render)
 }
 
 navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
   const voice = audio.createMediaStreamSource(stream)
 
+  // Feed the beast
   voice.connect(crush)
 
   // Before
@@ -77,7 +77,7 @@ navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
   // After
   scope2 = inspect(fader, true)
 
-  tick(draw)
+  window.requestAnimationFrame(render)
 }).catch(({ name, message}) => {
   console.log(`${name}: ${message}`)
 })
