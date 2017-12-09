@@ -1,10 +1,10 @@
 (function () {
 'use strict';
 
-var draw = function (from, plot, base) {
-  if ( base === void 0 ) base = 1;
+var draw = function (mapping, context, footing) {
+  if ( footing === void 0 ) footing = 1;
 
-  var ref = plot.canvas;
+  var ref = context.canvas;
   var w = ref.width;
   var h = ref.height;
 
@@ -13,38 +13,50 @@ var draw = function (from, plot, base) {
 
   var max = Math.max(w, h);
   var min = Math.min(w, h);
-  var map = from(max, min, base);
 
-  return function (feed) {
-    plot.clearRect(0, 0, w, h);
-    plot.save();
-    plot.translate(x, y);
-    plot.beginPath();
+  var transform = mapping(max, min, footing);
 
-    Array.from(feed).map(map).forEach(function (ref) {
+  return function (points) {
+    context.clearRect(0, 0, w, h);
+    context.save();
+    context.translate(x, y);
+    context.beginPath();
+
+    Array.from(points).map(transform).forEach(function (ref) {
       var a = ref[0];
       var b = ref[1];
 
-      plot.moveTo(a.x, a.y);
-      plot.lineTo(b.x, b.y);
+      context.moveTo(a.x, a.y);
+      context.lineTo(b.x, b.y);
     });
 
-    plot.stroke();
-    plot.restore();
+    context.stroke();
+    context.restore();
+
+    return context
   }
 };
 
-var flat = function (span, room, base) { return function (v, i, ref) {
-  var length = ref.length;
+var flat = function (max, min, bottom) { return function (v, i, ref) {
+  var total = ref.length;
 
-  var step = span / length;
+  // Step size
+  var s = max / total;
 
-  var q = step * i;
-  var r = room * 0.5;
-  var k = step * 0.5 * (length - 1);
+  // Radius, vertical space available
+  var r = min * 0.5;
 
+  // Current step
+  var q = s * i;
+
+  // Correction along the x-axis, relates to max
+  var k = s * 0.5 * (total - 1);
+
+  // Progress, horizontal placement
   var x = q - k;
-  var y = r * v || base;
+
+  // Line height
+  var y = r * v || bottom;
 
   return [{ x: x, y: y }, { x: x, y: -1 * y }]
 }; };
