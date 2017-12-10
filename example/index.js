@@ -1,8 +1,8 @@
 (function () {
 'use strict';
 
-var draw = function (mapping, context, footing) {
-  if ( footing === void 0 ) footing = 1;
+var draw = function (mapping, context, bum) {
+  if ( bum === void 0 ) bum = 1;
 
   var ref = context.canvas;
   var w = ref.width;
@@ -14,7 +14,7 @@ var draw = function (mapping, context, footing) {
   var max = Math.max(w, h);
   var min = Math.min(w, h);
 
-  var transform = mapping(max, min, footing);
+  var transform = mapping(max, min, bum);
 
   return function (points) {
     context.clearRect(0, 0, w, h);
@@ -37,26 +37,26 @@ var draw = function (mapping, context, footing) {
   }
 };
 
-var flat = function (max, min, bottom) { return function (v, i, ref) {
-  var total = ref.length;
+var flat = function (max, min, bum) { return function (v, i, ref) {
+  var length = ref.length;
 
   // Step size
-  var s = max / total;
+  var s = max / length;
 
-  // Radius, vertical space available
+  // Midpoint vertical
   var r = min * 0.5;
 
   // Current step
   var q = s * i;
 
-  // Correction along the x-axis, relates to max
-  var k = s * 0.5 * (total - 1);
+  // Midpoint horizontal
+  var k = s * (length - 1) * 0.5;
 
-  // Progress, horizontal placement
+  // Progress
   var x = q - k;
 
   // Line height
-  var y = r * v || bottom;
+  var y = r * v || bum;
 
   return [{ x: x, y: y }, { x: x, y: -1 * y }]
 }; };
@@ -172,8 +172,6 @@ crush.connect(fader);
 
 var canvas = document.querySelector('canvas');
 var master = canvas.getContext('2d');
-var board1 = canvas.cloneNode().getContext('2d');
-var board2 = canvas.cloneNode().getContext('2d');
 
 var width = canvas.width;
 var height = canvas.height;
@@ -182,8 +180,12 @@ var middle = height * 0.5;
 var border = (width - 512) * 0.5;
 var margin = 10;
 
+var board1 = canvas.cloneNode().getContext('2d');
+var board2 = canvas.cloneNode().getContext('2d');
+
 board1.canvas.height = board2.canvas.height = middle - (margin * 2);
 board1.canvas.width = board2.canvas.width = width + (border * -2);
+
 board1.lineWidth = board2.lineWidth = 2;
 board2.strokeStyle = '#fff';
 

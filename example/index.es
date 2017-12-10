@@ -32,8 +32,6 @@ crush.connect(fader)
 
 const canvas = document.querySelector('canvas')
 const master = canvas.getContext('2d')
-const board1 = canvas.cloneNode().getContext('2d')
-const board2 = canvas.cloneNode().getContext('2d')
 
 const { width, height } = canvas
 
@@ -41,8 +39,12 @@ const middle = height * 0.5
 const border = (width - 512) * 0.5
 const margin = 10
 
+const board1 = canvas.cloneNode().getContext('2d')
+const board2 = canvas.cloneNode().getContext('2d')
+
 board1.canvas.height = board2.canvas.height = middle - (margin * 2)
 board1.canvas.width = board2.canvas.width = width + (border * -2)
+
 board1.lineWidth = board2.lineWidth = 2
 board2.strokeStyle = '#fff'
 
