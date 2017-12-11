@@ -3,7 +3,7 @@
 // # Sound
 // Helps make baudio style monophonic musics
 
-const createSignal = (settings = {}, callback = (() => {})) => {
+const createSignal = (settings = {}, callback = v => v) => {
   const { bufferSize = 512, context = new AudioContext() } = settings;
   const crunch = typeof settings === 'function' ? settings : callback;
 
