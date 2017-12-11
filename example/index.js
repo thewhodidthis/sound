@@ -114,7 +114,7 @@ var analyse = function (node, fft, k, fftSize) {
 
 var createSignal = function (settings, callback) {
   if ( settings === void 0 ) settings = {};
-  if ( callback === void 0 ) callback = (function () {});
+  if ( callback === void 0 ) callback = function (v) { return v; };
 
   var bufferSize = settings.bufferSize; if ( bufferSize === void 0 ) bufferSize = 512;
   var context = settings.context; if ( context === void 0 ) context = new AudioContext();
