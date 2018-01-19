@@ -198,6 +198,9 @@ var revert = function () {
       if ('ontouchstart' in window) {
         document.documentElement.classList.add('is-frozen');
         document.addEventListener('touchstart', launch);
+
+        // Avoid spaces on mobile
+        buffer.lineWidth = 5;
       } else {
         launch();
       }
