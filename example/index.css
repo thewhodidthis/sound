@@ -29,7 +29,7 @@ p {
 
 figure {
   left: 50%;
-  margin: -150px 0 0 -250px;
+  margin: -180px 0 0 -320px;
   position: absolute;
   text-align: center;
   top: 50%;
@@ -37,7 +37,6 @@ figure {
 
 figcaption {
   margin: 0.5rem 0 0;
-  max-width: 500px;
 }
 
 canvas,
@@ -45,6 +44,42 @@ img {
   display: block;
 }
 
-canvas {
-  background: #eee;
+.is-broken::after,
+.is-frozen::after,
+.is-mining::after {
+  box-sizing: border-box;
+  content: "";
+  height: 0;
+  position: absolute;
+  top: 50%;
+}
+
+.is-frozen::after {
+  display: block;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0;
+  border: 1.5em solid transparent;
+  border-left-color: #000;
+  border-left-width: 2.5rem;
+  margin-left: 0.75rem;
+}
+
+.is-broken::after,
+.is-mining::after {
+  display: inline-block;
+  font-size: 0.75rem;
+  left: 0;
+  text-align: center;
+  width: 100%;
+}
+
+.is-mining::after {
+  content: "PLEASE WAIT...";
+}
+
+.is-broken::after {
+  color: #f00;
+  content: "Errors loading sound bytes, sorry :)";
+  letter-spacing: 1px;
 }
