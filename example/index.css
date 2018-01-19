@@ -55,14 +55,14 @@ img {
 }
 
 .is-frozen::after {
-  display: block;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 0;
   border: 1.5em solid transparent;
   border-left-color: #000;
   border-left-width: 2.5rem;
+  display: block;
+  left: 50%;
   margin-left: 0.75rem;
+  transform: translate(-50%, -50%);
+  width: 0;
 }
 
 .is-broken::after,
