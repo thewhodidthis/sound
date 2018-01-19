@@ -31,7 +31,6 @@
   "devDependencies": {
     "@thewhodidthis/binocular": "github:thewhodidthis/binocular",
     "@thewhodidthis/eslint-config": "latest",
-    "@thewhodidthis/lines": "latest",
     "buble": "latest",
     "cutaway": "latest",
     "eslint": "latest",
