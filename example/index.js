@@ -1,74 +1,6 @@
 (function () {
 'use strict';
 
-var draw = function (mapping, context, bum) {
-  if ( bum === void 0 ) bum = 1;
-
-  var ref = context.canvas;
-  var w = ref.width;
-  var h = ref.height;
-
-  var x = w * 0.5;
-  var y = h * 0.5;
-
-  var max = Math.max(w, h);
-  var min = Math.min(w, h);
-
-  var transform = mapping(max, min, bum);
-
-  return function (points) {
-    context.clearRect(0, 0, w, h);
-    context.save();
-    context.translate(x, y);
-    context.beginPath();
-
-    Array.from(points).map(transform).forEach(function (ref) {
-      var a = ref[0];
-      var b = ref[1];
-
-      context.moveTo(a.x, a.y);
-      context.lineTo(b.x, b.y);
-    });
-
-    context.stroke();
-    context.restore();
-
-    return context
-  }
-};
-
-var flat = function (max, min, bum) { return function (v, i, ref) {
-  var length = ref.length;
-
-  // Step size
-  var s = max / length;
-
-  // Midpoint vertical
-  var r = min * 0.5;
-
-  // Current step
-  var q = s * i;
-
-  // Midpoint horizontal
-  var k = s * (length - 1) * 0.5;
-
-  // Progress
-  var x = q - k;
-
-  // Line height
-  var y = r * v || bum;
-
-  return [{ x: x, y: y }, { x: x, y: -1 * y }]
-}; };
-
-
-var across = function () {
-  var args = [], len = arguments.length;
-  while ( len-- ) args[ len ] = arguments[ len ];
-
-  return draw.apply(void 0, [ flat ].concat( args ));
-};
-
 var analyse = function (node, fft, k, fftSize) {
   if ( fft === void 0 ) fft = false;
   if ( k === void 0 ) k = 1;
@@ -99,14 +31,8 @@ var analyse = function (node, fft, k, fftSize) {
   // Connect
   node.connect(analyser);
 
-  return function (draw) {
-    if ( draw === void 0 ) draw = function (v) { return v; };
-
-    copy(data);
-    draw(snap(data));
-
-    return analyser
-  }
+  /* eslint no-sequences: 1 */
+  return function () { return (copy(data), snap(data)); }
 };
 
 // # Sound
@@ -147,8 +73,8 @@ window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
 var audio = new AudioContext();
 var fader = audio.createGain();
-
-fader.connect(audio.destination);
+var dummy = audio.createGain();
+var input = audio.createBufferSource();
 
 var bits = 16;
 var step = Math.pow(0.5, bits);
@@ -168,65 +94,130 @@ var crush = createSignal({ context: audio }, function (t, i, g) {
   return last
 });
 
+fader.connect(audio.destination);
 crush.connect(fader);
 
 var canvas = document.querySelector('canvas');
-var master = canvas.getContext('2d');
+var target = canvas.getContext('2d');
+var buffer = canvas.cloneNode().getContext('2d');
 
-var width = canvas.width;
-var height = canvas.height;
+buffer.lineWidth = 4;
 
-var middle = height * 0.5;
-var border = (width - 512) * 0.5;
-var margin = 10;
+var ref = target.canvas;
+var w = ref.width;
+var h = ref.height;
+var middle = h * 0.5;
 
-var board1 = canvas.cloneNode().getContext('2d');
-var board2 = canvas.cloneNode().getContext('2d');
+var sketch = function (offset) {
+  if ( offset === void 0 ) offset = 0;
 
-board1.canvas.height = board2.canvas.height = middle - (margin * 2);
-board1.canvas.width = board2.canvas.width = width + (border * -2);
+  var grid = { x: w / 128, y: h * 0.25 };
 
-board1.lineWidth = board2.lineWidth = 2;
-board2.strokeStyle = '#fff';
+  var spot = grid.y + offset;
+  var edge = middle + offset;
 
-var graph1 = across(board1);
-var graph2 = across(board2);
+  return function (points) {
+    buffer.clearRect(0, offset, w, edge);
+    buffer.beginPath();
 
-var scope1;
-var scope2;
+    points.forEach(function (v, i) {
+      var x = i * grid.x;
+      var y = Math.floor(v * middle) || 1;
 
-var render = function () {
-  scope1(graph1);
-  scope2(graph2);
+      buffer.moveTo(2 + x, spot + y);
+      buffer.lineTo(2 + x, spot - y);
+    });
 
-  master.clearRect(0, 0, width, height);
-  master.fillRect(0, middle, width, middle);
-
-  master.drawImage(board1.canvas, border, margin);
-  master.drawImage(board2.canvas, border, margin + middle);
-
-  window.requestAnimationFrame(render);
+    buffer.stroke();
+  }
 };
 
-navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
-  var voice = audio.createMediaStreamSource(stream);
+var graph1 = sketch();
+var graph2 = sketch(middle);
 
-  // Feed the beast
+// Dry
+var scope1 = analyse(dummy, true, 0.25);
+
+// Wet
+var scope2 = analyse(fader, true, 0.25);
+
+var update = function () {
+  var a = scope1();
+  var b = scope2();
+
+  graph1(a);
+  graph2(b);
+};
+
+var render = function () {
+  target.clearRect(0, 0, w, h);
+  target.drawImage(buffer.canvas, 0, 0);
+};
+
+/* eslint no-unused-vars: 1 */
+var repeat = function () {
+  update();
+  render();
+
+  window.requestAnimationFrame(repeat);
+};
+
+var launch = function (e, voice) {
+  if ( voice === void 0 ) voice = input;
+
+  if (e) {
+    document.documentElement.classList.remove('is-frozen');
+    document.removeEventListener('touchstart', launch);
+  }
+
   voice.connect(crush);
+  voice.connect(dummy);
 
-  // Before
-  scope1 = analyse(voice, true);
+  if (input.buffer && !input.playbackState) {
+    input.start();
+  }
 
-  // After
-  scope2 = analyse(fader, true);
+  window.requestAnimationFrame(repeat);
+};
 
-  window.requestAnimationFrame(render);
-}).catch(function (ref) {
-  var name = ref.name;
-  var message = ref.message;
+var revert = function () {
+  var request = new XMLHttpRequest();
 
-  console.log((name + ": " + message));
-});
+  // The clip is from Stephen Fry's reading of `The Hitchhikers Guide to the Galaxy` by Douglas Adams
+  // http://www.penguinrandomhouseaudio.com/book/670/the-hitchhikers-guide-to-the-galaxy/
+  request.open('GET', 'clip.mp3', true);
+
+  request.responseType = 'arraybuffer';
+  request.onload = function (e) {
+    audio.decodeAudioData(e.target.response, function (data) {
+      input.buffer = data;
+      input.loop = true;
+
+      document.documentElement.classList.remove('is-mining');
+
+      if ('ontouchstart' in window) {
+        document.documentElement.classList.add('is-frozen');
+        document.addEventListener('touchstart', launch);
+      } else {
+        launch();
+      }
+    }, function () {
+      document.documentElement.classList.add('is-broken');
+    });
+  };
+
+  document.documentElement.classList.add('is-mining');
+
+  request.send();
+};
+
+if (navigator.mediaDevices) {
+  navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+    launch(false, audio.createMediaStreamSource(stream));
+  }).catch(revert);
+} else {
+  revert();
+}
 
 }());
 
