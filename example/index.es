@@ -9,7 +9,7 @@ const dummy = audio.createGain()
 const input = audio.createBufferSource()
 
 const bits = 16
-const step = Math.pow(0.5, bits)
+const lick = Math.pow(0.5, bits)
 const freq = 0.1
 
 let fuzz = 0
@@ -20,7 +20,7 @@ const crush = createSignal({ context: audio }, (t, i, g) => {
 
   if (fuzz >= 1) {
     fuzz -= 1
-    last = step * Math.floor((g / step) + 0.5)
+    last = lick * Math.floor((g / lick) + 0.5)
   }
 
   return last
@@ -38,22 +38,22 @@ buffer.lineWidth = 3
 const { width: w, height: h } = target.canvas
 
 const sketch = (offset = 0) => {
-  const map = { x: w / 128, y: h * 0.125 }
-  const fix = 0.5 * map.x
-  const cap = 0.5 * h
+  const edge = 0.5 * h
+  const step = w / 128
+  const butt = 0.5 * step
 
   return (points) => {
-    buffer.clearRect(0, offset - map.y, w, offset + map.y)
     buffer.beginPath()
 
     points.forEach((v, i) => {
-      const x = i * map.x
-      const y = Math.floor(v * cap) || 1
+      const x = i * step
+      const y = Math.floor(v * edge) || 1
 
-      buffer.moveTo(fix + x, offset + y)
-      buffer.lineTo(fix + x, offset - y)
+      buffer.moveTo(butt + x, offset + y)
+      buffer.lineTo(butt + x, offset - y)
     })
 
+    buffer.strokeStyle = offset > h * 0.5 ? '#00d' : '#d00'
     buffer.stroke()
   }
 }
@@ -78,6 +78,7 @@ const update = () => {
 const render = () => {
   target.clearRect(0, 0, w, h)
   target.drawImage(buffer.canvas, 0, 0)
+  buffer.clearRect(0, 0, w, h)
 }
 
 /* eslint no-unused-vars: 1 */

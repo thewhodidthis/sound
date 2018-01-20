@@ -77,7 +77,7 @@ var dummy = audio.createGain();
 var input = audio.createBufferSource();
 
 var bits = 16;
-var step = Math.pow(0.5, bits);
+var lick = Math.pow(0.5, bits);
 var freq = 0.1;
 
 var fuzz = 0;
@@ -88,7 +88,7 @@ var crush = createSignal({ context: audio }, function (t, i, g) {
 
   if (fuzz >= 1) {
     fuzz -= 1;
-    last = step * Math.floor((g / step) + 0.5);
+    last = lick * Math.floor((g / lick) + 0.5);
   }
 
   return last
@@ -110,22 +110,22 @@ var h = ref.height;
 var sketch = function (offset) {
   if ( offset === void 0 ) offset = 0;
 
-  var map = { x: w / 128, y: h * 0.125 };
-  var fix = 0.5 * map.x;
-  var cap = 0.5 * h;
+  var edge = 0.5 * h;
+  var step = w / 128;
+  var butt = 0.5 * step;
 
   return function (points) {
-    buffer.clearRect(0, offset - map.y, w, offset + map.y);
     buffer.beginPath();
 
     points.forEach(function (v, i) {
-      var x = i * map.x;
-      var y = Math.floor(v * cap) || 1;
+      var x = i * step;
+      var y = Math.floor(v * edge) || 1;
 
-      buffer.moveTo(fix + x, offset + y);
-      buffer.lineTo(fix + x, offset - y);
+      buffer.moveTo(butt + x, offset + y);
+      buffer.lineTo(butt + x, offset - y);
     });
 
+    buffer.strokeStyle = offset > h * 0.5 ? '#00d' : '#d00';
     buffer.stroke();
   }
 };
@@ -150,6 +150,7 @@ var update = function () {
 var render = function () {
   target.clearRect(0, 0, w, h);
   target.drawImage(buffer.canvas, 0, 0);
+  buffer.clearRect(0, 0, w, h);
 };
 
 /* eslint no-unused-vars: 1 */
