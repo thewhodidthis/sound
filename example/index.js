@@ -101,39 +101,37 @@ var canvas = document.querySelector('canvas');
 var target = canvas.getContext('2d');
 var buffer = canvas.cloneNode().getContext('2d');
 
-buffer.lineWidth = 4;
+buffer.lineWidth = 3;
 
 var ref = target.canvas;
 var w = ref.width;
 var h = ref.height;
-var middle = h * 0.5;
 
 var sketch = function (offset) {
   if ( offset === void 0 ) offset = 0;
 
-  var grid = { x: w / 128, y: h * 0.25 };
-
-  var spot = grid.y + offset;
-  var edge = middle + offset;
+  var map = { x: w / 128, y: h * 0.125 };
+  var fix = 0.5 * map.x;
+  var cap = 0.5 * h;
 
   return function (points) {
-    buffer.clearRect(0, offset, w, edge);
+    buffer.clearRect(0, offset - map.y, w, offset + map.y);
     buffer.beginPath();
 
     points.forEach(function (v, i) {
-      var x = i * grid.x;
-      var y = Math.floor(v * middle) || 1;
+      var x = i * map.x;
+      var y = Math.floor(v * cap) || 1;
 
-      buffer.moveTo(2 + x, spot + y);
-      buffer.lineTo(2 + x, spot - y);
+      buffer.moveTo(fix + x, offset + y);
+      buffer.lineTo(fix + x, offset - y);
     });
 
     buffer.stroke();
   }
 };
 
-var graph1 = sketch();
-var graph2 = sketch(middle);
+var graph1 = sketch(h * 0.35);
+var graph2 = sketch(h * 0.65);
 
 // Dry
 var scope1 = analyse(dummy, true, 0.25);

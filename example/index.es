@@ -33,35 +33,33 @@ const canvas = document.querySelector('canvas')
 const target = canvas.getContext('2d')
 const buffer = canvas.cloneNode().getContext('2d')
 
-buffer.lineWidth = 4
+buffer.lineWidth = 3
 
 const { width: w, height: h } = target.canvas
-const middle = h * 0.5
 
 const sketch = (offset = 0) => {
-  const grid = { x: w / 128, y: h * 0.25 }
-
-  const spot = grid.y + offset
-  const edge = middle + offset
+  const map = { x: w / 128, y: h * 0.125 }
+  const fix = 0.5 * map.x
+  const cap = 0.5 * h
 
   return (points) => {
-    buffer.clearRect(0, offset, w, edge)
+    buffer.clearRect(0, offset - map.y, w, offset + map.y)
     buffer.beginPath()
 
     points.forEach((v, i) => {
-      const x = i * grid.x
-      const y = Math.floor(v * middle) || 1
+      const x = i * map.x
+      const y = Math.floor(v * cap) || 1
 
-      buffer.moveTo(2 + x, spot + y)
-      buffer.lineTo(2 + x, spot - y)
+      buffer.moveTo(fix + x, offset + y)
+      buffer.lineTo(fix + x, offset - y)
     })
 
     buffer.stroke()
   }
 }
 
-const graph1 = sketch()
-const graph2 = sketch(middle)
+const graph1 = sketch(h * 0.35)
+const graph2 = sketch(h * 0.65)
 
 // Dry
 const scope1 = inspect(dummy, true, 0.25)
