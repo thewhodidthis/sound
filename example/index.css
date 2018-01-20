@@ -48,30 +48,19 @@ img {
 .is-frozen::after,
 .is-mining::after {
   box-sizing: border-box;
-  content: "";
+  display: inline-block;
+  font-size: 0.75rem;
   height: 0;
+  left: 0;
   position: absolute;
+  text-align: center;
   top: 50%;
+  width: 100%;
 }
 
 .is-frozen::after {
-  border: 1.5em solid transparent;
-  border-left-color: #000;
-  border-left-width: 2.5rem;
-  display: block;
-  left: 50%;
-  margin-left: 0.75rem;
-  transform: translate(-50%, -50%);
-  width: 0;
-}
-
-.is-broken::after,
-.is-mining::after {
-  display: inline-block;
-  font-size: 0.75rem;
-  left: 0;
-  text-align: center;
-  width: 100%;
+  content: "OK tap to play →";
+  font-style: italic;
 }
 
 .is-mining::after {
