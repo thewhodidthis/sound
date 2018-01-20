@@ -125,7 +125,7 @@ var sketch = function (offset) {
       buffer.lineTo(butt + x, offset - y);
     });
 
-    buffer.strokeStyle = offset > h * 0.5 ? '#00d' : '#d00';
+    buffer.strokeStyle = offset > h * 0.5 ? '#d00' : '#00d';
     buffer.stroke();
   }
 };
