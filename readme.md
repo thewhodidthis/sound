@@ -24,14 +24,14 @@ fader.connect(audio.destination)
 let isBusy = false
 
 document.addEventListener('click', () => {
-  const time = audio.currentTime
+    const time = audio.currentTime
 
-  if (isBusy) {
-    fader.gain.setTargetAtTime(0, time, 0.25)
-  } else {
-    fader.gain.setTargetAtTime(1, time, 1)
-  }
+    if (isBusy) {
+        fader.gain.setTargetAtTime(0, time, 0.25)
+    } else {
+        fader.gain.setTargetAtTime(1, time, 1)
+    }
 
-  isBusy = !isBusy
+    isBusy = !isBusy
 }, false)
 ```
