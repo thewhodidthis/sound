@@ -156,7 +156,6 @@ var render = function () {
   buffer.clearRect(0, 0, w, h);
 };
 
-/* eslint no-unused-vars: 1 */
 var repeat = function () {
   update();
   render();
@@ -185,8 +184,8 @@ var launch = function (e, voice) {
 var revert = function () {
   var request = new XMLHttpRequest();
 
-  // The clip is from Stephen Fry's reading of `The Hitchhikers Guide to the Galaxy` by Douglas Adams
-  // http://www.penguinrandomhouseaudio.com/book/670/the-hitchhikers-guide-to-the-galaxy/
+  // The clip is from Samuel L. Jackson's reading of `A Rage in Harlem` by Chester Himes
+  // https://soundcloud.com/audible/a-rage-in-harlem/
   request.open('GET', 'clip.mp3', true);
 
   request.responseType = 'arraybuffer';
