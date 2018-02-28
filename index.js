@@ -1,7 +1,7 @@
 'use strict';
 
 // # Sound
-// Helps make baudio style monophonic musics
+// Helps create baudio style monophonic musics
 
 const createSignal = (settings = {}, callback = v => v) => {
   const { bufferSize = 512, context = new AudioContext() } = settings;
