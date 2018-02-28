@@ -1,6 +1,6 @@
 import 'cutaway'
 import { assert, report } from 'tapeless'
-import createSignal from './index.es'
+import createSignal from './index.mjs'
 
 window.AudioContext = window.AudioContext || window.webkitAudioContext
 
