@@ -2,8 +2,8 @@
   "name": "@thewhodidthis/sound",
   "version": "0.0.4",
   "description": "Helps make noises",
-  "main": "index.js",
-  "module": "index.es",
+  "main": "index",
+  "module": "index.mjs",
   "homepage": "https://github.com/thewhodidthis/sound#readme",
   "repository": {
     "type": "git",
@@ -15,23 +15,22 @@
   "scripts": {
     "pretest": "eslint test.js",
     "test": "rollup -c node:x -f iife test.js | kpow",
-    "prestart": "eslint index.es",
-    "start": "rollup -f cjs index.es > index.js",
-    "preexample": "eslint example/index.es",
-    "example": "cd example; rollup -c node:x -f iife index.es | buble > index.js"
+    "prestart": "eslint index.mjs",
+    "start": "rollup -f cjs index.mjs > index.js",
+    "preexample": "eslint example/index.js",
+    "example": "cd example; rollup -c node:x -f iife index.js > bundle.js"
   },
   "eslintConfig": {
     "extends": "@thewhodidthis"
   },
   "engines": {
-    "node": ">=6.4.0",
-    "npm": ">=3.10.3"
+    "node": ">=6.11.0",
+    "npm": ">=3.10.10"
   },
   "dependencies": {},
   "devDependencies": {
     "@thewhodidthis/binocular": "github:thewhodidthis/binocular",
     "@thewhodidthis/eslint-config": "latest",
-    "buble": "latest",
     "cutaway": "latest",
     "eslint": "latest",
     "kpow": "latest",
