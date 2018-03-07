@@ -1,4 +1,3 @@
-## Sound
 > Ultra thin baudio style wrapper around `ScriptProcessorNode`
 
 ### Setup
