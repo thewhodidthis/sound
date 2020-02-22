@@ -9,9 +9,14 @@ const { ok } = assert
 const sound = createSignal()
 const { context, bufferSize, onaudioprocess } = sound
 
-ok(context instanceof AudioContext, 'created audio context')
-ok(bufferSize === 512, 'buffer size is set')
-ok(sound instanceof ScriptProcessorNode, 'returns script processor')
-ok(typeof onaudioprocess === 'function', 'onaudioprocess event listener attached')
+ok
+  .describe('created audio context')
+  .test(context instanceof AudioContext)
+  .describe('buffer size is set')
+  .test(bufferSize === 512)
+  .describe('returns script processor')
+  .test(sound instanceof ScriptProcessorNode)
+  .describe('onaudioprocess event listener attached')
+  .test(typeof onaudioprocess === 'function')
 
 report()
