@@ -1,12 +1,13 @@
 html {
   font: 16px/1.25 arial, sans-serif;
+  height: 100%;
 }
 
 body {
-  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
   margin: 0;
-  overflow: hidden;
-  padding: 0.5rem;
+  min-height: 100%;
 }
 
 a {
@@ -18,29 +19,27 @@ a:hover {
   text-decoration: underline;
 }
 
-small {
-  font-size: 0.75rem;
-}
-
 p {
   font-size: 0.875rem;
   margin: 0;
 }
 
 figure {
-  left: 50%;
-  margin: -180px 0 0 -320px;
-  position: absolute;
-  text-align: center;
-  top: 50%;
+  margin: auto;
+  max-width: 640px;
 }
 
 figcaption {
   margin: 0.5rem 0 0;
+  text-align: center;
 }
 
-canvas,
 img {
+  vertical-align: middle;
+}
+
+canvas {
+  background: white center/contain no-repeat;
   display: block;
 }
 
@@ -59,7 +58,7 @@ img {
 }
 
 .is-frozen::after {
-  content: "OK tap to play →";
+  content: "OK tap to start →";
   font-style: italic;
 }
 
@@ -69,6 +68,6 @@ img {
 
 .is-broken::after {
   color: #f00;
-  content: "Errors loading sound bytes, sorry :)";
+  content: "Problems loading sound bytes, sorry :)";
   letter-spacing: 1px;
 }
