@@ -2,45 +2,48 @@
   "name": "@thewhodidthis/sound",
   "version": "0.0.5",
   "description": "Helps make noises",
-  "main": "index",
-  "module": "index.mjs",
+  "keywords": [
+    "audio"
+  ],
   "homepage": "https://github.com/thewhodidthis/sound#readme",
+  "bugs": {
+    "url": "https://github.com/thewhodidthis/sound/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/thewhodidthis/sound.git"
   },
-  "bugs": {
-    "url": "https://github.com/thewhodidthis/sound/issues"
+  "license": "Unlicense",
+  "author": "Sotiri Bakagiannis <sotirios.bakagiannis@gmail.com> (http://thewhodidthis.com)",
+  "main": "index",
+  "module": "index.mjs",
+  "directories": {
+    "example": "example"
   },
   "scripts": {
-    "pretest": "eslint test.js",
-    "test": "rollup -c node:x -f iife test.js | kpow",
-    "prestart": "eslint index.mjs",
-    "start": "rollup -f cjs index.mjs > index.js",
     "preexample": "eslint example/index.js",
-    "example": "cd example; rollup -c node:x -f iife index.js > bundle.js"
+    "example": "cd example; rollup -c node:x -f iife -o bundle.js index.js",
+    "prestart": "eslint index.mjs",
+    "start": "rollup -f cjs -o index.js index.mjs",
+    "pretest": "eslint test.js",
+    "test": "rollup -c node:x -f iife test.js | kpow"
   },
   "eslintConfig": {
     "extends": "@thewhodidthis"
   },
-  "engines": {
-    "node": ">=6.11.0",
-    "npm": ">=3.10.10"
-  },
   "dependencies": {},
   "devDependencies": {
     "@thewhodidthis/binocular": "github:thewhodidthis/binocular",
-    "@thewhodidthis/eslint-config": "latest",
-    "cutaway": "latest",
-    "eslint": "latest",
-    "kpow": "latest",
-    "rollup": "latest",
-    "rollup-config-x": "latest",
-    "tapeless": "latest"
+    "@thewhodidthis/eslint-config": "^0.0.18",
+    "cutaway": "^0.0.8",
+    "eslint": "^6.8.0",
+    "kpow": "^0.1.5",
+    "rollup": "^1.31.1",
+    "rollup-config-x": "^1.0.5",
+    "tapeless": "^0.0.10"
   },
-  "keywords": [
-    "audio"
-  ],
-  "author": "sChzs BkgNns <sotirios.bakagiannis@gmail.com> (https://www.thewhodidthis.com)",
-  "license": "Unlicense"
+  "engines": {
+    "node": ">=6.11.0",
+    "npm": ">=3.10.10"
+  }
 }
