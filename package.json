@@ -1,6 +1,7 @@
 {
   "name": "@thewhodidthis/sound",
   "version": "0.0.5",
+  "private": true,
   "description": "Helps make noises",
   "keywords": [
     "audio"
