@@ -1,12 +1,17 @@
-> Ultra thin baudio style wrapper around `ScriptProcessorNode`
+## about
 
-### Setup
+Ultra thin [baudio](https://github.com/substack/baudio) style wrapper around `ScriptProcessorNode` good for lo-fi math music.
+
+## setup
+
+Fetch latest from GitHub directly:
+
 ```sh
-# Fetch latest from github
-npm i thewhodidthis/sound
+npm install thewhodidthis/sound
 ```
 
-### Usage
+## usage
+
 ```js
 import createSignal from '@thewhodidthis/sound'
 
