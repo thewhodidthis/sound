@@ -7,10 +7,13 @@ Ultra thin [baudio](https://github.com/substack/baudio) style wrapper around `Sc
 Fetch latest from GitHub directly:
 
 ```sh
+# Includes ESM and CJS versions
 npm install thewhodidthis/sound
 ```
 
 ## usage
+
+Give it a callback accepting a time argument and returning an amplitude for each sample, and connect the returning node to the rest of your Web Audio patch. For example,
 
 ```js
 import createSignal from '@thewhodidthis/sound'
