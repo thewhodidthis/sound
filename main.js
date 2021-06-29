@@ -3,7 +3,7 @@
 
 const createSignal = (settings = {}, callback = v => v) => {
   const { bufferSize = 512, context = new AudioContext() } = settings
-  const crunch = typeof settings === 'function' ? settings : callback
+  const crunch = typeof settings === "function" ? settings : callback
 
   const worker = context.createScriptProcessor(bufferSize, 1, 1)
   const stride = 1 / context.sampleRate
