@@ -1,19 +1,19 @@
-import inspect from '@thewhodidthis/binocular'
-import createSignal from '../index.mjs'
+import inspect from "@thewhodidthis/binocular"
+import createSignal from "../main.js"
 
 window.AudioContext = window.AudioContext || window.webkitAudioContext
 
 const html = document.documentElement
 
-document.addEventListener('click', () => {
-  const canvas = document.querySelector('canvas')
+document.addEventListener("click", () => {
+  const canvas = document.querySelector("canvas")
   const { width, height } = canvas
 
-  const finalContext = canvas.getContext('2d')
-  const dummyContext = canvas.cloneNode().getContext('2d')
+  const finalContext = canvas.getContext("2d")
+  const dummyContext = canvas.cloneNode().getContext("2d")
 
   // Avoid spaces on mobile
-  dummyContext.lineWidth = 'ontouchstart' in window ? 5 : 3
+  dummyContext.lineWidth = "ontouchstart" in window ? 5 : 3
 
   const sketch = (offset = 0) => {
     const verticalMax = 0.5 * height
@@ -31,7 +31,7 @@ document.addEventListener('click', () => {
         dummyContext.lineTo(halfStep + x, offset - y)
       })
 
-      dummyContext.strokeStyle = offset > height * 0.5 ? '#00d' : '#d00'
+      dummyContext.strokeStyle = offset > height * 0.5 ? "#00d" : "#d00"
       dummyContext.stroke()
     }
   }
@@ -51,7 +51,7 @@ document.addEventListener('click', () => {
   let fuzz = 0
   let last = 0
 
-  const crush = createSignal({ context: audioContext }, (t, i, g) => {
+  const crush = createSignal({ context: audioContext }, (_t, _i, g) => {
     fuzz += freq
 
     if (fuzz >= 1) {
@@ -104,7 +104,7 @@ document.addEventListener('click', () => {
   const revert = () => {
     const request = new XMLHttpRequest()
 
-    request.responseType = 'arraybuffer'
+    request.responseType = "arraybuffer"
     request.onload = (e) => {
       audioContext.decodeAudioData(e.target.response, (data) => {
         input.buffer = data
@@ -114,19 +114,19 @@ document.addEventListener('click', () => {
         input.connect(crush)
         start()
 
-        html.classList.remove('is-mining')
+        html.classList.remove("is-mining")
       }, () => {
-        html.classList.add('is-broken')
+        html.classList.add("is-broken")
       })
     }
 
     // The clip is from Samuel L. Jackson's reading of `A Rage in Harlem` by Chester Himes
     // https://soundcloud.com/audible/a-rage-in-harlem/
-    request.open('GET', 'clip.mp3', true)
+    request.open("GET", "clip.mp3", true)
     request.send()
 
     // Signal loading started
-    html.classList.add('is-mining')
+    html.classList.add("is-mining")
   }
 
   if (navigator.mediaDevices) {
@@ -143,8 +143,8 @@ document.addEventListener('click', () => {
     revert()
   }
 
-  html.classList.remove('is-frozen')
+  html.classList.remove("is-frozen")
 }, { once: true })
 
 // Prompt for user interaction to bypass autoplay restrictions
-html.classList.add('is-frozen')
+html.classList.add("is-frozen")
