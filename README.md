@@ -4,10 +4,10 @@ Ultra thin [baudio](https://github.com/substack/baudio) style wrapper around `Sc
 
 ## setup
 
-Fetch latest from GitHub directly:
+Download from GitHub directly:
 
 ```sh
-# Includes ESM and CJS versions
+# Add to package.json
 npm install thewhodidthis/sound
 ```
 
@@ -16,7 +16,7 @@ npm install thewhodidthis/sound
 Give it a callback accepting a time argument and returning an amplitude for each sample, and connect the returning node to the rest of your Web Audio patch. For example,
 
 ```js
-import createSignal from '@thewhodidthis/sound'
+import createSignal from "@thewhodidthis/sound"
 
 const audio = new AudioContext()
 const fader = audio.createGain()
@@ -30,7 +30,7 @@ fader.connect(audio.destination)
 
 let isBusy = false
 
-document.addEventListener('click', () => {
+document.addEventListener("click", () => {
   const time = audio.currentTime
 
   if (isBusy) {
