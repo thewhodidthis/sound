@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>sound.js</title>
+    <script type="module">
+      import "https://thewhodidthis.github.io/cutaway/main.js"
+      import { assert, report } from "https://thewhodidthis.github.io/tapeless/main.js"
+
+      import { createTrigger } from "./trigger.js"
+      import fx from "./fx.js"
+      import inspector from "./inspector.js"
+      import { fm } from "./synth.js"
+
+      const audio = new AudioContext()
+      const trigger = createTrigger(audio)
+
+      {
+        const t = trigger()
+
+        assert.ok
+          .describe("features on / off handlers")
+          .test(Object.prototype.hasOwnProperty.call(t, "on"))
+          .test(Object.prototype.hasOwnProperty.call(t, "off"))
+      }
+
+      {
+        const t = trigger(audio.createGain())
+
+        assert.equal
+          .describe("will toggle and chain")
+          .test(t, t.on())
+          .describe("will toggle and chain", "ADSR trigger")
+          .test(t, t.off())
+      }
+
+      {
+        const voice = fm(audio)
+        const { carrier, modulator } = voice()
+
+        assert.ok
+          .describe("features a carrier vco")
+          .test(Object.prototype.hasOwnProperty.call(carrier, "vco"))
+          .describe("which is an OscillatorNode")
+          .test(carrier.vco instanceof OscillatorNode)
+          .describe("features a carrier vca")
+          .test(Object.prototype.hasOwnProperty.call(carrier, "vca"))
+          .describe("which is a GainNode")
+          .test(carrier.vca instanceof GainNode)
+          .describe("features a modulator vco")
+          .test(Object.prototype.hasOwnProperty.call(modulator, "vco"))
+          .describe("which is an OscillatorNode")
+          .test(modulator.vco instanceof OscillatorNode)
+          .describe("features a modulator vca")
+          .test(Object.prototype.hasOwnProperty.call(modulator, "vca"))
+          .describe("which is a GainNode", "FM synth")
+          .test(modulator.vca instanceof GainNode)
+      }
+
+      try {
+        inspector()
+      } catch (e) {
+        assert.ok
+          .describe("expect TypeError when calling inspector sans input")
+          .test(e instanceof TypeError)
+      }
+
+      {
+        const voice = new OscillatorNode(audio)
+        const scope = inspector(voice)
+
+        assert.ok
+          .describe("expect lambda on init")
+          .test(typeof scope === "function")
+          .describe("safe to call sans arguments", "Analyser")
+          .test(scope())
+      }
+
+      report()
+    </script>
+  </head>
+  <body></body>
+</html>

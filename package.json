@@ -1,0 +1,24 @@
+{
+  "name": "@thewhodidthis/sound",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Web Audio effects helpers",
+  "homepage": "https://github.com/thewhodidthis/sound#readme",
+  "bugs": "https://github.com/thewhodidthis/sound/issues",
+  "repository": "github:thewhodidthis/sound",
+  "license": "ISC",
+  "author": "Thepersonwhodidthis <thewhodidthis@fastmail.com> (http://thewhodidthis.com/)",
+  "engines": {
+    "node": ">=18.14.0",
+    "npm": ">=9.2.1"
+  },
+  "browser": "./main.js",
+  "type": "module",
+  "exports": {
+    ".": "./main.js",
+    "fx": "./fx.js",
+    "inspector": "./inspector.js",
+    "synth": "./synth.js",
+    "trigger": "./trigger.js"
+  }
+}
