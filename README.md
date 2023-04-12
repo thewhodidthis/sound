@@ -30,7 +30,7 @@ Source from an import map:
 
 ## usage, overview
 
-Since an `AudioContext` is very much required when dealing with the Web Audio API, all exports expect one to begin with either directly or implicitly via `AudioNode` as is the case with the [synth](#synth) and [inspector](#inspector) modules. There are seven modules available each of which may be imported separately as required:
+Since an `AudioContext` is very much required when dealing with the Web Audio API, all exports expect an instance of it to begin with either directly or implicitly via `AudioNode` as is the case with the [synth](#synth) and [inspector](#inspector) modules. There are seven modules available each of which may be imported separately as required:
 
 1. [**inspector**](#inspector)
 2. [**synth**](#synth)
