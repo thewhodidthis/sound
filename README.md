@@ -134,7 +134,7 @@ A simple formant synthesis emulator using three band-pass filters in series. Tak
   import { formant } from "https://thewhodidthis.github.io/sound/synth.js"
 
   const presets = {
-    // Copied from the Csound manual appendix D tables 16 - 20.
+    // Found in the Csound manual appendix D tables 16 - 20.
     // https://csound.com/docs/manual/MiscFormants.html
     a: {
       f: [800, 1150, 2900],
