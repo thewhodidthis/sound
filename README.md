@@ -42,7 +42,7 @@ Since an `AudioContext` is very much required when dealing with the Web Audio AP
 
 ### inspector
 
-Takes care of some of the boilerplate involved in creating an `AnalyserNode` for monitoring web audio signals, be it in the time or frequency domains. The default and only export expects an `AudioNode` and once initialized returns a closure meant to be called repeatedly for reading the data. For example:
+Takes care of some of the boilerplate involved in creating an `AnalyserNode` for monitoring web audio signals, be it in the time or frequency domains. The default and only export expects an `AudioNode` and once initialized returns a closure meant to be called repeatedly for reading in new data. For example:
 
 ```html
 <script type="module">
