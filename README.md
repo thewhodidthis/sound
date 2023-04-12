@@ -89,7 +89,7 @@ A hollow container module that re-exports the following:
 
 #### fm
 
-Encapsulates FM basics for a single voice. Takes an `AudioNode` output target and returns a closure that can then be called with a base frequency, modulation index, and modulation depth as arguments to get back a pair of carrier and modulator objects featuring  `vco` and `vca` keys of `OscillatorNode` and `GainNode` types.
+Encapsulates FM basics for a single voice. Takes an `AudioNode` output target and returns a closure that can then be called with a base frequency, modulation index, and modulation depth as arguments to get back a pair of `carrier` and `modulator` objects featuring  `vco` and `vca` keys of `OscillatorNode` and `GainNode` types.
 
 ```html
 <script type="module">
