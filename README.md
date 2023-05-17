@@ -287,7 +287,7 @@ For example:
 
 ### fx
 
-The [example script](example.js) illustrates how to prep and combine these.
+The [example script](example.js) illustrates how to prep and combine these:
 
 | Export | Description |
 | :---   | :---        |
