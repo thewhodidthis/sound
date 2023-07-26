@@ -13,8 +13,8 @@ export function granular(target) {
       const center = position * buffer.duration
       const range = spread * (buffer.duration - center)
 
-      const lo = center - range
-      const hi = center + range
+      const lo = clamp(center - range, 0, buffer.duration)
+      const hi = clamp(center + range, 0, buffer.duration)
 
       Array.from({ length: count }).forEach((_, i) => {
         const source = new AudioBufferSourceNode(cache, { buffer, detune: this.transpose * 1200 })
