@@ -22,7 +22,7 @@ export function granular(target) {
 
         const { currentTime } = cache
 
-        // Low delays result in high density clouds
+        // Low delays result in high density clouds.
         const delay = i * this.duration * this.delay
         const when = currentTime + delay
 
