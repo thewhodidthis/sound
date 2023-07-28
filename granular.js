@@ -20,11 +20,9 @@ export function granular(target) {
         const source = new AudioBufferSourceNode(cache, { buffer, detune: this.transpose * 1200 })
         const panner = new StereoPannerNode(cache, { pan: this.pan })
 
-        const { currentTime } = cache
-
         // Low delays result in high density clouds.
         const delay = i * this.duration * this.delay
-        const when = currentTime + delay
+        const when = cache.currentTime + delay
 
         // Should be center if no spread or seed disabled.
         const offset = when + rand(lo, hi)

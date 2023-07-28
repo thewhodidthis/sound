@@ -138,18 +138,16 @@ var sound = (function(exports) {
         const center = position * buffer.duration
         const range = spread * (buffer.duration - center)
 
-        const lo = center - range
-        const hi = center + range
+        const lo = clamp(center - range, 0, buffer.duration)
+        const hi = clamp(center + range, 0, buffer.duration)
 
         Array.from({ length: count }).forEach((_, i) => {
           const source = new AudioBufferSourceNode(cache, { buffer, detune: this.transpose * 1200 })
           const panner = new StereoPannerNode(cache, { pan: this.pan })
 
-          const { currentTime } = cache
-
-          // Low delays result in high density clouds
+          // Low delays result in high density clouds.
           const delay = i * this.duration * this.delay
-          const when = currentTime + delay
+          const when = cache.currentTime + delay
 
           // Should be center if no spread or seed disabled.
           const offset = when + rand(lo, hi)
