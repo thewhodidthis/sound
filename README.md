@@ -264,10 +264,10 @@ For example:
     const buffer = await cloud(0.5, 80)
 
     const source = new AudioBufferSourceNode(audio, {
-        buffer,
-        loop: true,
-        loopStart: 4,
-        loopEnd: 8
+      buffer,
+      loop: true,
+      loopStart: 4,
+      loopEnd: 8
     })
 
     source.connect(fader)
