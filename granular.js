@@ -34,7 +34,7 @@ export function granular(target) {
 
         fader.gain.setValueAtTime(0, when)
         fader.gain.linearRampToValueAtTime(volume, when + a)
-        fader.gain.linearRampToValueAtTime(0, when + r)
+        fader.gain.linearRampToValueAtTime(0, when + a + r)
 
         source.connect(panner).connect(fader).connect(cache.destination)
         source.start(when, offset, this.duration)
