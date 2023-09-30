@@ -113,11 +113,11 @@ Encapsulates FM basics for a single voice. Takes an `AudioNode` output target an
     fader.gain.linearRampToValueAtTime(0, audio.currentTime + 2)
 
     // Cut off the oscillators once fade completes.
-    setTimeout(() => {
-      modulator.vco.stop()
-      carrier.vco.stop()
+    modulator.vco.stop(audio.currentTime + 2.5)
+    carrier.vco.stop(audio.currentTime + 2.5)
+    carrier.vco.addEventListener("ended", () => {
       b.removeAttribute("disabled")
-    }, 2250)
+    })
 
     b.setAttribute("disabled", "")
   })
