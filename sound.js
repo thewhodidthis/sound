@@ -91,13 +91,13 @@ var sound = (function(exports) {
   function fm(target) {
     const { context } = target
     const carrier = {
-      vco: context.createOscillator(),
-      vca: context.createGain(),
+      vco: new OscillatorNode(context),
+      vca: new GainNode(context),
     }
 
     const modulator = {
-      vco: context.createOscillator(),
-      vca: context.createGain(),
+      vco: new OscillatorNode(context),
+      vca: new GainNode(context),
     }
 
     return function voice(frequency = 440, ratio = 1, depth = 80) {
