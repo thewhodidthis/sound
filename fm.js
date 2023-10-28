@@ -2,7 +2,7 @@
 export function fm(target) {
   const { context } = target
   const carrier = {
-    vco: new OscillatorNode(context),
+    vco: new OscillatorNode(context, { type: "square" }),
     vca: new GainNode(context),
   }
 
