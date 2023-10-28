@@ -217,7 +217,7 @@ A simple formant synthesis emulator using three band-pass filters in series. Tak
 
 Tries to improve on other JS plugins of the kind by leveraging the `OfflineAudioContext` interface for dicing the grains, by not requiring the input sample be sourced from file, and by including a standard PRNG for more predictable results.
 
-First pass in an `AudioNode` out which the `AudioContext` and number of channels are inferred. Then give it an `AudioBuffer` source and get back a closure. Then it's time to configure playback. The default settings are:
+First pass in an `AudioNode` out of which the `AudioContext` and number of channels are inferred. Then give it an `AudioBuffer` source and get back a closure. Then it's time to configure playback. The default settings are:
 
 | Key  | Value | Description |
 | :--- | :---  | :---    |
