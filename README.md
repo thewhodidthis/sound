@@ -102,7 +102,7 @@ Encapsulates FM basics for a single voice. Takes an `AudioNode` output target an
 
     const voice = fm(fader)
 
-    // The arguments are: frequency, modulator-to-carrier frequency ratio, modulation depth.
+    // Arguments are: frequency, modulator-to-carrier frequency ratio, modulation depth.
     const { carrier, modulator } = voice(440, Math.random(), 120)
 
     fader.connect(audio.destination)
