@@ -26,7 +26,7 @@ video.addEventListener("click", async function start() {
   const destination = audio.createMediaStreamDestination()
   const [track] = destination.stream.getAudioTracks()
 
-  video?.srcObject?.addTrack(track)
+  this.srcObject?.addTrack(track)
 
   const fader = audio.createGain()
   const dummy = audio.createGain()
